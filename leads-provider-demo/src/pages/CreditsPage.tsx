@@ -159,7 +159,7 @@ export default function CreditsPage() {
                       <p className="text-3xl font-bold text-accent mb-1">{pack.price}€</p>
                       <p className="text-sm text-gray-500">{(pack.price / pack.credits).toFixed(2)}€ / crédit</p>
                       
-                      {pack.bonus > 0 && (
+                      {(pack.bonus ?? 0) > 0 && (
                         <div className="mt-3 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium inline-block">
                           +{pack.bonus} bonus
                         </div>

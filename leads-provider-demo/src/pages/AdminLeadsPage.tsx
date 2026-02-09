@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Search, Filter, Download, Eye, Trash2, CheckCircle, XCircle, Clock, AlertTriangle, Play, ArrowUpDown, ChevronLeft, ChevronRight, Building2, MapPin, Calendar, BarChart3 } from 'lucide-react';
+import { Search, Download, Eye, Trash2, CheckCircle, XCircle, Clock, Play, ArrowUpDown, ChevronLeft, ChevronRight, Building2, MapPin } from 'lucide-react';
 import Layout from '../components/Layout';
-import { mockLeads, sectorDistribution, regionDistribution } from '../data/mockData';
+import { mockLeads, sectorDistribution } from '../data/mockData';
 import type { Lead } from '../types';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 

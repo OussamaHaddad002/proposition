@@ -8,8 +8,8 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const { setRole } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
-  const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
+  const [isLogin] = useState(true);
+  const [selectedRole] = useState<UserRole | null>(null);
 
   const roles: { role: UserRole; label: string; description: string; icon: React.ReactNode; color: string }[] = [
     { 

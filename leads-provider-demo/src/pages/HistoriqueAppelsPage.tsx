@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Phone, PhoneIncoming, PhoneOff, PhoneMissed, Clock, CheckCircle, XCircle, RotateCcw, Play, Calendar, Filter, Download, User, Building2 } from 'lucide-react';
+import { Phone, PhoneMissed, Clock, CheckCircle, XCircle, RotateCcw, Play, Download, User, Building2 } from 'lucide-react';
 import Layout from '../components/Layout';
 import { mockAgent, mockLeads } from '../data/mockData';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';

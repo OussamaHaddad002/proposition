@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Users, TrendingUp, DollarSign, Activity, Shield, AlertTriangle, CheckCircle2, Server, Database, Cpu, Settings, UserPlus, Ban, Eye, MoreVertical, Brain, Gauge, Zap } from 'lucide-react';
+import { Users, TrendingUp, DollarSign, Activity, AlertTriangle, CheckCircle2, Server, Database, Cpu, Settings, UserPlus, Ban, Eye, MoreVertical, Brain, Gauge, Zap } from 'lucide-react';
 import Layout from '../components/Layout';
 import StatCard from '../components/StatCard';
-import { mockLeads, monthlyStats, sectorDistribution } from '../data/mockData';
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { mockLeads, monthlyStats } from '../data/mockData';
+import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import TourGuide from '../components/TourGuide';
 import { dashboardTourSteps } from '../data/tourSteps';
 
@@ -170,7 +170,7 @@ export default function AdminDashboard() {
                     <YAxis stroke="#94a3b8" />
                     <Tooltip 
                       contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                      formatter={(value: number) => [`${value.toLocaleString()}€`, 'Revenus']}
+                      formatter={(value) => [`${Number(value).toLocaleString()}€`, 'Revenus']}
                     />
                     <Area type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={2} fill="url(#colorRevenue)" />
                   </AreaChart>

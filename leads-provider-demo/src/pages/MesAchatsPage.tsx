@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Package, CheckCircle, XCircle, Clock, Eye, Download, Phone, Mail, Building2, MapPin, Calendar, TrendingUp, Star } from 'lucide-react';
+import { Package, CheckCircle, XCircle, Clock, Eye, Download, Phone, Mail, Building2, TrendingUp } from 'lucide-react';
 import Layout from '../components/Layout';
 import { mockAcheteur, mockLeads } from '../data/mockData';
 import type { Lead } from '../types';

@@ -83,7 +83,6 @@ export default function TourGuide({ steps, isActive, onComplete, onSkip }: TourG
   const getModalPosition = () => {
     const modalWidth = 400;
     const modalHeight = modalRef.current?.offsetHeight || 200;
-    const padding = step.highlightPadding || 8;
     const offset = 20;
 
     let top = 0;

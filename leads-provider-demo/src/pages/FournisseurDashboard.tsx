@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Upload, Users, Euro, TrendingUp, FileSpreadsheet, CheckCircle, XCircle, Clock, Download } from 'lucide-react';
+import { Upload, Users, Euro, FileSpreadsheet, CheckCircle, XCircle, Clock, Download } from 'lucide-react';
 import Layout from '../components/Layout';
 import StatCard from '../components/StatCard';
-import { mockFournisseur, mockLeads, monthlyStats } from '../data/mockData';
+import { mockFournisseur, monthlyStats } from '../data/mockData';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import TourGuide from '../components/TourGuide';
 import { dashboardTourSteps } from '../data/tourSteps';
@@ -19,8 +19,6 @@ export default function FournisseurDashboard() {
     }
   }, [searchParams]);
 
-  const myLeads = mockLeads.slice(0, 30);
-  
   const statusData = [
     { name: 'Qualifiés', value: 45, color: '#10b981' },
     { name: 'En attente', value: 25, color: '#f59e0b' },
@@ -104,7 +102,7 @@ export default function FournisseurDashboard() {
                 <XAxis dataKey="month" stroke="#94a3b8" />
                 <YAxis stroke="#94a3b8" tickFormatter={(value) => `${value/1000}k€`} />
                 <Tooltip 
-                  formatter={(value: number) => [`${value.toLocaleString()}€`, 'Revenus']}
+                  formatter={(value) => [`${Number(value).toLocaleString()}€`, 'Revenus']}
                   contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
                 />
                 <Area 

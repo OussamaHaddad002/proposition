@@ -101,8 +101,7 @@ export const generateMockLeads = (): Lead[] => {
 };
 
 // Explications de score mockées
-export const generateScoreExplanation = (score: number): ScoreExplanation[] => {
-  const baseScore = 50;
+export const generateScoreExplanation = (_score: number): ScoreExplanation[] => {
   const contributions: ScoreExplanation[] = [
     {
       feature: 'Secteur d\'activité',

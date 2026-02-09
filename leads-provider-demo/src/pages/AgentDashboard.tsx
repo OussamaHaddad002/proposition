@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Phone, PhoneCall, PhoneOff, Clock, CheckCircle, XCircle, RotateCcw, Headphones, User, Building2, MapPin, Play, Pause } from 'lucide-react';
+import { Phone, PhoneCall, PhoneOff, Clock, CheckCircle, XCircle, RotateCcw, Headphones, User, Building2, MapPin } from 'lucide-react';
 import Layout from '../components/Layout';
 import StatCard from '../components/StatCard';
 import { mockAgent, mockLeads } from '../data/mockData';
@@ -12,7 +12,6 @@ import { dashboardTourSteps } from '../data/tourSteps';
 export default function AgentDashboard() {
   const [currentLead, setCurrentLead] = useState<Lead | null>(null);
   const [callStatus, setCallStatus] = useState<'idle' | 'calling' | 'connected' | 'ended'>('idle');
-  const [callTimer, setCallTimer] = useState(0);
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [searchParams] = useSearchParams();
   const [showTour, setShowTour] = useState(false);
@@ -42,7 +41,7 @@ export default function AgentDashboard() {
     setTimeout(() => setCallStatus('connected'), 2000);
   };
 
-  const endCall = (status: 'qualified' | 'not_qualified' | 'callback') => {
+  const endCall = (_status: 'qualified' | 'not_qualified' | 'callback') => {
     setCallStatus('ended');
     setTimeout(() => {
       setCallStatus('idle');

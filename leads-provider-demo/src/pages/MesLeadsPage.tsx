@@ -1,16 +1,16 @@
 import { useState } from 'react';
-import { FileSpreadsheet, Upload, CheckCircle, XCircle, Clock, Eye, Trash2, Download, TrendingUp, DollarSign, Users, BarChart3 } from 'lucide-react';
+import { FileSpreadsheet, Upload, CheckCircle, Clock, Eye, Trash2, Download, TrendingUp, DollarSign } from 'lucide-react';
 import Layout from '../components/Layout';
 import { mockFournisseur, mockLeads } from '../data/mockData';
 import type { Lead } from '../types';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 export default function MesLeadsPage() {
-  const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+  const [, setSelectedLead] = useState<Lead | null>(null);
   const [filterStatus, setFilterStatus] = useState<'all' | 'pending' | 'qualified' | 'rejected' | 'sold'>('all');
 
   // Mes leads avec statuts variés
-  const myLeads = mockLeads.slice(0, 35).map((lead, index) => ({
+  const myLeads = mockLeads.slice(0, 35).map((lead, _index) => ({
     ...lead,
     uploadDate: new Date(Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000).toISOString(),
     earnings: lead.status === 'sold' ? lead.price * 0.7 : undefined,

@@ -50,10 +50,6 @@ export default function LeadCard({
     ? `${lead.firstName.charAt(0)}. ${lead.lastName.charAt(0)}.`
     : `${lead.firstName} ${lead.lastName}`;
 
-  const displayEmail = anonymous
-    ? `${lead.email.split('@')[0].slice(0, 3)}***@${lead.email.split('@')[1]}`
-    : lead.email;
-
   const displayPhone = anonymous
     ? `+33 * ** ** ** ${lead.phone.slice(-2)}`
     : lead.phone;
