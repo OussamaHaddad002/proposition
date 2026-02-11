@@ -8,37 +8,40 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const { setRole } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
-  const [isLogin] = useState(true);
-  const [selectedRole] = useState<UserRole | null>(null);
+  const [hoveredRole, setHoveredRole] = useState<UserRole | null>(null);
 
-  const roles: { role: UserRole; label: string; description: string; icon: React.ReactNode; color: string }[] = [
+  const roles: { role: UserRole; label: string; description: string; icon: React.ReactNode; accent: string; bg: string }[] = [
     { 
       role: 'fournisseur', 
       label: 'Fournisseur', 
-      description: 'Vendez vos leads qualifiés',
-      icon: <Users size={24} />,
-      color: 'from-blue-500 to-blue-600'
+      description: 'Vendez vos leads',
+      icon: <Users size={20} />,
+      accent: 'text-blue-600',
+      bg: 'bg-blue-50 group-hover:bg-blue-100',
     },
     { 
       role: 'agent', 
       label: 'Agent', 
-      description: 'Qualifiez les leads par téléphone',
-      icon: <Phone size={24} />,
-      color: 'from-green-500 to-green-600'
+      description: 'Qualifiez par téléphone',
+      icon: <Phone size={20} />,
+      accent: 'text-emerald-600',
+      bg: 'bg-emerald-50 group-hover:bg-emerald-100',
     },
     { 
       role: 'acheteur', 
       label: 'Acheteur', 
       description: 'Achetez des leads exclusifs',
-      icon: <ShoppingCart size={24} />,
-      color: 'from-purple-500 to-purple-600'
+      icon: <ShoppingCart size={20} />,
+      accent: 'text-violet-600',
+      bg: 'bg-violet-50 group-hover:bg-violet-100',
     },
     { 
       role: 'admin', 
-      label: 'Administrateur', 
+      label: 'Admin', 
       description: 'Gérez la plateforme',
-      icon: <Shield size={24} />,
-      color: 'from-red-500 to-red-600'
+      icon: <Shield size={20} />,
+      accent: 'text-rose-600',
+      bg: 'bg-rose-50 group-hover:bg-rose-100',
     },
   ];
 
@@ -48,159 +51,145 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary to-primary-dark flex">
-      {/* Left Panel - Branding */}
-      <div className="hidden lg:flex lg:w-1/2 flex-col justify-between p-12">
-        <div>
-          <img src="/logo.png" alt="Leads Provider" className="h-12" />
-        </div>
-        
-        <div className="max-w-lg">
-          <h1 className="text-4xl font-bold text-white mb-6">
-            Vendez plus grâce à nos <span className="text-accent">Leads qualifiés</span> et 100% exclusifs !
-          </h1>
-          <p className="text-white/70 text-lg mb-8">
-            Plus de 18 ans d'expérience dans la prospection BtoB et BtoC. 
-            Nous générons des leads qualifiés et exclusifs, 100% vérifiés par téléphone.
-          </p>
-          
-          <div className="grid grid-cols-2 gap-6">
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
-              <div className="text-3xl font-bold text-accent mb-1">15 000+</div>
-              <div className="text-white/70 text-sm">Leads générés</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
-              <div className="text-3xl font-bold text-accent mb-1">98%</div>
-              <div className="text-white/70 text-sm">Satisfaction client</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
-              <div className="text-3xl font-bold text-accent mb-1">78%</div>
-              <div className="text-white/70 text-sm">Taux de qualification</div>
-            </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
-              <div className="text-3xl font-bold text-accent mb-1">24h</div>
-              <div className="text-white/70 text-sm">Délai moyen</div>
-            </div>
-          </div>
-        </div>
+    <div className="min-h-screen bg-[#f8f9fb] flex flex-col">
+      {/* Full-screen centered layout */}
+      <div className="flex-1 flex items-center justify-center px-4 py-10">
+        <div className="w-full max-w-[920px] flex flex-col lg:flex-row bg-white rounded-3xl shadow-[0_4px_40px_rgba(0,0,0,0.06)] overflow-hidden">
 
-        <div className="text-white/50 text-sm">
-          © 2026 Leads Provider. Tous droits réservés.
-        </div>
-      </div>
+          {/* Left — Branding panel */}
+          <div className="lg:w-[380px] bg-gradient-to-br from-[#344a5e] to-[#2a3d4e] p-8 lg:p-10 flex flex-col justify-between relative overflow-hidden">
+            {/* Subtle background pattern */}
+            <div className="absolute inset-0 opacity-[0.04]" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
+            
+            <div className="relative z-10">
+              <img src="/logo.png" alt="Leads Provider" className="h-9 mb-10" />
+              <h1 className="text-2xl lg:text-[1.65rem] font-bold text-white leading-snug mb-4">
+                Des leads qualifiés,<br />
+                <span className="text-[#fd7958]">100% exclusifs.</span>
+              </h1>
+              <p className="text-white/60 text-sm leading-relaxed">
+                +18 ans d'expérience en prospection BtoB & BtoC. Chaque lead est vérifié par téléphone.
+              </p>
+            </div>
 
-      {/* Right Panel - Login Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
-        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 animate-fade-in">
-          {/* Mobile Logo */}
-          <div className="lg:hidden flex justify-center mb-8">
-            <img src="/logo.png" alt="Leads Provider" className="h-10" />
-          </div>
-
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              {isLogin ? 'Connexion' : 'Inscription'}
-            </h2>
-            <p className="text-gray-500">
-              {isLogin ? 'Accédez à votre espace personnel' : 'Créez votre compte en quelques clics'}
-            </p>
-          </div>
-
-          {/* Demo: Role Selection */}
-          <div className="mb-6">
-            <div className="grid grid-cols-2 gap-3">
-              {roles.map((r) => (
-                <button
-                  key={r.role}
-                  onClick={() => handleLogin(r.role)}
-                  className={`group relative p-4 rounded-xl border-2 transition-all hover:shadow-lg ${
-                    selectedRole === r.role 
-                      ? 'border-accent bg-accent/5' 
-                      : 'border-gray-200 hover:border-accent/50'
-                  }`}
-                >
-                  <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${r.color} flex items-center justify-center text-white mb-2 mx-auto group-hover:scale-110 transition-transform`}>
-                    {r.icon}
-                  </div>
-                  <div className="text-sm font-semibold text-gray-800">{r.label}</div>
-                  <div className="text-xs text-gray-500 mt-1">{r.description}</div>
-                  <ArrowRight 
-                    size={16} 
-                    className="absolute top-3 right-3 text-gray-300 group-hover:text-accent group-hover:translate-x-1 transition-all" 
-                  />
-                </button>
+            <div className="relative z-10 mt-10 grid grid-cols-2 gap-3">
+              {[
+                { value: '15k+', label: 'Leads générés' },
+                { value: '98%', label: 'Satisfaction' },
+                { value: '78%', label: 'Qualification' },
+                { value: '<24h', label: 'Délai moyen' },
+              ].map((stat) => (
+                <div key={stat.label} className="text-center py-3 px-2 rounded-xl bg-white/[0.07]">
+                  <div className="text-lg font-bold text-white">{stat.value}</div>
+                  <div className="text-[11px] text-white/50 mt-0.5">{stat.label}</div>
+                </div>
               ))}
             </div>
           </div>
 
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-500">ou connectez-vous</span>
-            </div>
-          </div>
-
-          {/* Login Form */}
-          <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); handleLogin('acheteur'); }}>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <div className="relative">
-                <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  type="email"
-                  placeholder="votre@email.fr"
-                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
-                />
+          {/* Right — Login panel */}
+          <div className="flex-1 p-8 lg:p-10 flex flex-col justify-center">
+            <div className="max-w-sm mx-auto w-full">
+              {/* Header */}
+              <div className="mb-8">
+                <h2 className="text-xl font-semibold text-gray-900 mb-1">Bienvenue</h2>
+                <p className="text-sm text-gray-400">Choisissez votre espace ou connectez-vous</p>
               </div>
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
-              <div className="relative">
-                <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="••••••••"
-                  className="w-full pl-10 pr-12 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
-                />
+              {/* Role selection — primary action */}
+              <div className="space-y-2.5 mb-8">
+                {roles.map((r) => (
+                  <button
+                    key={r.role}
+                    onClick={() => handleLogin(r.role)}
+                    onMouseEnter={() => setHoveredRole(r.role)}
+                    onMouseLeave={() => setHoveredRole(null)}
+                    className="group w-full flex items-center gap-4 px-4 py-3.5 rounded-xl border border-gray-100 hover:border-gray-200 bg-white hover:shadow-sm transition-all duration-200 text-left"
+                  >
+                    <div className={`w-9 h-9 rounded-lg ${r.bg} ${r.accent} flex items-center justify-center shrink-0 transition-colors duration-200`}>
+                      {r.icon}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-medium text-gray-800">{r.label}</div>
+                      <div className="text-xs text-gray-400">{r.description}</div>
+                    </div>
+                    <ArrowRight 
+                      size={16} 
+                      className={`shrink-0 transition-all duration-200 ${
+                        hoveredRole === r.role 
+                          ? 'text-gray-500 translate-x-0.5' 
+                          : 'text-gray-200'
+                      }`}
+                    />
+                  </button>
+                ))}
+              </div>
+
+              {/* Divider */}
+              <div className="relative mb-6">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-100"></div>
+                </div>
+                <div className="relative flex justify-center">
+                  <span className="px-3 bg-white text-[11px] uppercase tracking-wider text-gray-300 font-medium">
+                    ou par email
+                  </span>
+                </div>
+              </div>
+
+              {/* Compact login form */}
+              <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); handleLogin('acheteur'); }}>
+                <div className="relative">
+                  <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300" />
+                  <input
+                    type="email"
+                    placeholder="votre@email.fr"
+                    className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-100 rounded-lg text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#fd7958]/20 focus:border-[#fd7958]/40 focus:bg-white transition-all"
+                  />
+                </div>
+
+                <div className="relative">
+                  <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300" />
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Mot de passe"
+                    className="w-full pl-10 pr-10 py-2.5 bg-gray-50 border border-gray-100 rounded-lg text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#fd7958]/20 focus:border-[#fd7958]/40 focus:bg-white transition-all"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                  </button>
+                </div>
+
                 <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  type="submit"
+                  className="w-full py-2.5 bg-[#fd7958] text-white rounded-lg text-sm font-medium hover:bg-[#e86847] transition-colors flex items-center justify-center gap-2 group"
                 >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  Se connecter
+                  <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
+                </button>
+              </form>
+
+              {/* Footer links */}
+              <div className="flex items-center justify-between mt-5 text-xs text-gray-400">
+                <Link to="/inscription" className="hover:text-[#fd7958] transition-colors">
+                  Créer un compte
+                </Link>
+                <button type="button" className="hover:text-[#fd7958] transition-colors">
+                  Mot de passe oublié ?
                 </button>
               </div>
             </div>
-
-            <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" className="rounded border-gray-300 text-accent focus:ring-accent" />
-                <span className="text-gray-600">Se souvenir de moi</span>
-              </label>
-              <button type="button" className="text-accent hover:underline">
-                Mot de passe oublié ?
-              </button>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full py-3 bg-accent text-white rounded-xl font-semibold hover:bg-accent-dark transition-colors flex items-center justify-center gap-2 group"
-            >
-              <span>Se connecter</span>
-              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-            </button>
-          </form>
-
-          <p className="text-center text-sm text-gray-500 mt-6">
-            Pas encore de compte ?{' '}
-            <Link to="/inscription" className="text-accent font-medium hover:underline">
-              S'inscrire
-            </Link>
-          </p>
+          </div>
         </div>
+      </div>
+
+      {/* Bottom bar */}
+      <div className="text-center py-4 text-[11px] text-gray-300">
+        © 2026 Leads Provider
       </div>
     </div>
   );

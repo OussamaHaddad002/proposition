@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { ShoppingCart, Users, TrendingUp, CreditCard, ArrowRight, Target, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
+import { ShoppingCart, TrendingUp, CreditCard, ArrowRight, Target, Clock, CheckCircle2, AlertCircle, Sparkles } from 'lucide-react';
 import Layout from '../components/Layout';
-import StatCard from '../components/StatCard';
 import { mockAcheteur, mockLeads, sectorDistribution } from '../data/mockData';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import TourGuide from '../components/TourGuide';
 import { dashboardTourSteps } from '../data/tourSteps';
 
@@ -18,10 +17,8 @@ export default function AcheteurDashboard() {
     }
   }, [searchParams]);
 
-  // Leads disponibles (qualifiés)
   const availableLeads = mockLeads.filter(l => l.status === 'qualified').length;
   
-  // Données pour le graphique d'évolution
   const evolutionData = [
     { month: 'Oct', achats: 12, conversions: 4 },
     { month: 'Nov', achats: 18, conversions: 6 },
@@ -31,219 +28,225 @@ export default function AcheteurDashboard() {
     { month: 'Mar', achats: 24, conversions: 9 },
   ];
 
-  // Derniers achats simulés
   const recentPurchases = [
-    { id: '1', company: 'Tech Solutions', sector: 'Technologie', date: '2024-03-15', status: 'converted', score: 87 },
-    { id: '2', company: 'Green Energy', sector: 'Énergie', date: '2024-03-14', status: 'pending', score: 75 },
-    { id: '3', company: 'Finance Pro', sector: 'Finance', date: '2024-03-13', status: 'converted', score: 92 },
-    { id: '4', company: 'Retail Plus', sector: 'Commerce', date: '2024-03-12', status: 'lost', score: 68 },
-    { id: '5', company: 'Health First', sector: 'Santé', date: '2024-03-11', status: 'pending', score: 81 },
+    { id: '1', company: 'Tech Solutions', sector: 'Technologie', date: '15 Mar', status: 'converted', score: 87 },
+    { id: '2', company: 'Green Energy', sector: 'Énergie', date: '14 Mar', status: 'pending', score: 75 },
+    { id: '3', company: 'Finance Pro', sector: 'Finance', date: '13 Mar', status: 'converted', score: 92 },
+    { id: '4', company: 'Retail Plus', sector: 'Commerce', date: '12 Mar', status: 'lost', score: 68 },
+    { id: '5', company: 'Health First', sector: 'Santé', date: '11 Mar', status: 'pending', score: 81 },
   ];
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'converted':
-        return <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full"><CheckCircle2 size={12} />Converti</span>;
+        return <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-medium text-emerald-700 bg-emerald-50 rounded-md"><CheckCircle2 size={11} />Converti</span>;
       case 'pending':
-        return <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-yellow-700 bg-yellow-100 rounded-full"><Clock size={12} />En cours</span>;
+        return <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-medium text-amber-700 bg-amber-50 rounded-md"><Clock size={11} />En cours</span>;
       case 'lost':
-        return <span className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full"><AlertCircle size={12} />Perdu</span>;
+        return <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-medium text-red-600 bg-red-50 rounded-md"><AlertCircle size={11} />Perdu</span>;
       default:
         return null;
     }
   };
 
+  const stats = [
+    { label: 'Crédits', value: mockAcheteur.credits, suffix: '', icon: <CreditCard size={18} />, color: 'text-[#fd7958]', bg: 'bg-[#fd7958]/[0.07]' },
+    { label: 'Leads achetés', value: mockAcheteur.totalLeadsPurchased, suffix: '', change: '+12%', icon: <ShoppingCart size={18} />, color: 'text-[#344a5e]', bg: 'bg-[#344a5e]/[0.06]' },
+    { label: 'Conversion', value: mockAcheteur.conversionRate, suffix: '%', change: '+5%', icon: <TrendingUp size={18} />, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Disponibles', value: availableLeads, suffix: '', icon: <Target size={18} />, color: 'text-violet-600', bg: 'bg-violet-50' },
+  ];
+
   return (
     <Layout userRole="acheteur" userName={`${mockAcheteur.firstName} ${mockAcheteur.lastName}`}>
       <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+
+        {/* Header — clean, flat */}
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Tableau de bord </h1>
-            <p className="text-sm sm:text-base text-gray-500">Vue d'ensemble de votre activité</p>
+            <h1 className="text-xl font-semibold text-gray-900">Tableau de bord</h1>
+            <p className="text-sm text-gray-400 mt-0.5">Vue d'ensemble de votre activité</p>
           </div>
-          <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
-            <div className="bg-accent/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl">
-              <span className="text-accent font-bold text-lg sm:text-xl">{mockAcheteur.credits}</span>
-              <span className="text-accent ml-1 text-sm">crédits</span>
+          <div className="flex items-center gap-3">
+            <div className="px-3 py-1.5 rounded-lg bg-[#fd7958]/[0.08] text-sm">
+              <span className="font-semibold text-[#fd7958]">{mockAcheteur.credits}</span>
+              <span className="text-[#fd7958]/70 ml-1">crédits</span>
             </div>
             <Link 
               to="/acheteur/catalogue"
-              className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-accent text-white rounded-xl font-medium hover:bg-accent-dark transition-colors text-sm sm:text-base"
+              className="flex items-center gap-2 px-4 py-2 bg-[#fd7958] text-white rounded-lg text-sm font-medium hover:bg-[#e86847] transition-colors"
             >
-              <ShoppingCart size={16} />
-              <span className="hidden sm:inline">Voir le catalogue</span>
-              <span className="sm:hidden">Catalogue</span>
+              <ShoppingCart size={15} />
+              Catalogue
             </Link>
           </div>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" data-tour="stats-cards">
-          <StatCard
-            title="Crédits disponibles"
-            value={mockAcheteur.credits}
-            icon={<CreditCard size={24} />}
-            color="accent"
-          />
-          <StatCard
-            title="Leads achetés"
-            value={mockAcheteur.totalLeadsPurchased}
-            change={12}
-            icon={<Users size={24} />}
-            color="primary"
-          />
-          <StatCard
-            title="Taux de conversion"
-            value={`${mockAcheteur.conversionRate}%`}
-            change={5}
-            icon={<TrendingUp size={24} />}
-            color="success"
-          />
-          <StatCard
-            title="Leads disponibles"
-            value={availableLeads}
-            icon={<Target size={24} />}
-            color="info"
-          />
-        </div>
-
-        {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Evolution Chart */}
-          <div className="lg:col-span-2 bg-white rounded-xl p-6 shadow-sm border border-gray-100" data-tour="evolution-chart">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="font-semibold text-gray-900">Évolution des achats</h2>
-              <div className="flex items-center gap-4 text-sm">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-accent" />
-                  <span className="text-gray-600">Achats</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-green-500" />
-                  <span className="text-gray-600">Conversions</span>
+        {/* Stats — minimal cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3" data-tour="stats-cards">
+          {stats.map((s) => (
+            <div key={s.label} className="bg-white rounded-xl p-4 border border-gray-100/80">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs text-gray-400 font-medium">{s.label}</span>
+                <div className={`w-8 h-8 rounded-lg ${s.bg} ${s.color} flex items-center justify-center`}>
+                  {s.icon}
                 </div>
               </div>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-2xl font-bold text-gray-900">{s.value}{s.suffix}</span>
+                {s.change && (
+                  <span className="text-xs font-medium text-emerald-600">{s.change}</span>
+                )}
+              </div>
             </div>
-            <ResponsiveContainer width="100%" height={280}>
+          ))}
+        </div>
+
+        {/* Charts row */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {/* Evolution chart */}
+          <div className="lg:col-span-2 bg-white rounded-xl p-5 border border-gray-100/80" data-tour="evolution-chart">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-sm font-semibold text-gray-800">Évolution des achats</h2>
+              <div className="flex items-center gap-4 text-xs text-gray-400">
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-[#fd7958]" />Achats</span>
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500" />Conversions</span>
+              </div>
+            </div>
+            <ResponsiveContainer width="100%" height={240}>
               <AreaChart data={evolutionData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis dataKey="month" axisLine={false} tickLine={false} />
-                <YAxis axisLine={false} tickLine={false} />
-                <Tooltip />
-                <Area type="monotone" dataKey="achats" stroke="#fd7958" fill="#fd7958" fillOpacity={0.2} strokeWidth={2} />
-                <Area type="monotone" dataKey="conversions" stroke="#10b981" fill="#10b981" fillOpacity={0.2} strokeWidth={2} />
+                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#b0b8c4' }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#b0b8c4' }} width={30} />
+                <Tooltip 
+                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 16px rgba(0,0,0,0.08)', fontSize: '12px' }}
+                />
+                <defs>
+                  <linearGradient id="achatGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#fd7958" stopOpacity={0.15} />
+                    <stop offset="100%" stopColor="#fd7958" stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="convGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#10b981" stopOpacity={0.15} />
+                    <stop offset="100%" stopColor="#10b981" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <Area type="monotone" dataKey="achats" stroke="#fd7958" fill="url(#achatGrad)" strokeWidth={2} dot={false} />
+                <Area type="monotone" dataKey="conversions" stroke="#10b981" fill="url(#convGrad)" strokeWidth={2} dot={false} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
 
-          {/* Sector Distribution */}
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-            <h2 className="font-semibold text-gray-900 mb-4">Répartition par secteur</h2>
-            <ResponsiveContainer width="100%" height={180}>
+          {/* Sector donut */}
+          <div className="bg-white rounded-xl p-5 border border-gray-100/80">
+            <h2 className="text-sm font-semibold text-gray-800 mb-4">Répartition secteurs</h2>
+            <ResponsiveContainer width="100%" height={160}>
               <PieChart>
                 <Pie
                   data={sectorDistribution}
                   cx="50%"
                   cy="50%"
-                  innerRadius={50}
-                  outerRadius={80}
+                  innerRadius={46}
+                  outerRadius={70}
                   paddingAngle={3}
                   dataKey="value"
+                  strokeWidth={0}
                 >
                   {sectorDistribution.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip />
+                <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 16px rgba(0,0,0,0.08)', fontSize: '12px' }} />
               </PieChart>
             </ResponsiveContainer>
-            <div className="space-y-2 mt-4">
+            <div className="space-y-1.5 mt-3">
               {sectorDistribution.slice(0, 4).map((item) => (
-                <div key={item.name} className="flex items-center gap-2 text-sm">
-                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }} />
-                  <span className="text-gray-600 flex-1">{item.name}</span>
-                  <span className="font-medium">{item.value}%</span>
+                <div key={item.name} className="flex items-center gap-2 text-xs">
+                  <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+                  <span className="text-gray-500 flex-1 truncate">{item.name}</span>
+                  <span className="font-medium text-gray-700">{item.value}%</span>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Recent Purchases & Quick Actions */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Recent Purchases */}
-          <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden" data-tour="recent-purchases">
-            <div className="p-6 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-              <h2 className="font-semibold text-gray-900">Derniers achats</h2>
-              <Link to="/acheteur/achats" className="text-accent text-sm font-medium hover:underline flex items-center gap-1">
-                Voir tout <ArrowRight size={14} />
+        {/* Purchases + sidebar */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {/* Recent purchases — clean table */}
+          <div className="lg:col-span-2 bg-white rounded-xl border border-gray-100/80 overflow-hidden" data-tour="recent-purchases">
+            <div className="px-5 py-4 flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-gray-800">Derniers achats</h2>
+              <Link to="/acheteur/achats" className="text-xs text-[#fd7958] font-medium hover:underline flex items-center gap-1">
+                Tout voir <ArrowRight size={12} />
               </Link>
             </div>
-            <div className="divide-y divide-gray-100">
-              {recentPurchases.map((purchase) => (
-                <div key={purchase.id} className="p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 hover:bg-gray-50 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center text-primary font-bold flex-shrink-0">
-                      {purchase.company.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="font-medium text-gray-900">{purchase.company}</p>
-                      <p className="text-sm text-gray-500">{purchase.sector}</p>
-                    </div>
+            <div className="divide-y divide-gray-50">
+              {recentPurchases.map((p) => (
+                <div key={p.id} className="px-5 py-3 flex items-center gap-3 hover:bg-gray-50/50 transition-colors">
+                  <div className="w-9 h-9 rounded-lg bg-[#344a5e]/[0.06] flex items-center justify-center text-[#344a5e] text-sm font-semibold shrink-0">
+                    {p.company.charAt(0)}
                   </div>
-                  <div className="flex items-center gap-4 ml-auto">
-                    <div className="text-right hidden sm:block">
-                      <div className="flex items-center gap-1">
-                        <Target size={14} className="text-accent" />
-                        <span className="font-medium text-gray-900">{purchase.score}</span>
-                      </div>
-                      <p className="text-xs text-gray-400">{purchase.date}</p>
-                    </div>
-                    {getStatusBadge(purchase.status)}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-800 truncate">{p.company}</p>
+                    <p className="text-[11px] text-gray-400">{p.sector} · {p.date}</p>
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <span className="text-xs font-semibold text-gray-600 hidden sm:block">{p.score}</span>
+                    {getStatusBadge(p.status)}
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Quick Actions */}
-          <div className="space-y-4" data-tour="quick-actions">
-            <div className="bg-gradient-to-br from-accent to-accent-dark rounded-xl p-6 text-white">
-              <ShoppingCart size={32} className="mb-4" />
-              <h3 className="font-bold text-lg mb-2">Parcourir le catalogue</h3>
-              <p className="text-white/80 text-sm mb-4">Découvrez {availableLeads} leads qualifiés disponibles</p>
-              <Link 
-                to="/acheteur/catalogue"
-                className="inline-flex items-center gap-2 bg-white text-accent px-4 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors"
-              >
-                Explorer <ArrowRight size={16} />
-              </Link>
+          {/* Quick actions — stacked cards */}
+          <div className="space-y-3" data-tour="quick-actions">
+            {/* CTA card */}
+            <div className="bg-white rounded-xl p-5 border border-gray-100/80 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-[#fd7958]/[0.04] rounded-full -translate-y-1/2 translate-x-1/2" />
+              <div className="relative z-10">
+                <div className="w-9 h-9 rounded-lg bg-[#fd7958]/[0.08] flex items-center justify-center mb-3">
+                  <Sparkles size={18} className="text-[#fd7958]" />
+                </div>
+                <h3 className="font-semibold text-sm text-gray-800 mb-1">{availableLeads} leads disponibles</h3>
+                <p className="text-gray-400 text-xs mb-4 leading-relaxed">
+                  Leads qualifiés et vérifiés prêts à l'achat
+                </p>
+                <Link 
+                  to="/acheteur/catalogue"
+                  className="inline-flex items-center gap-1.5 bg-[#fd7958] text-white px-3.5 py-2 rounded-lg text-xs font-medium hover:bg-[#e86847] transition-colors"
+                >
+                  Explorer <ArrowRight size={13} />
+                </Link>
+              </div>
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-              <CreditCard size={24} className="text-accent mb-3" />
-              <h3 className="font-bold text-gray-900 mb-1">Recharger mes crédits</h3>
-              <p className="text-gray-500 text-sm mb-4">Achetez des crédits pour débloquer plus de leads</p>
-              <Link 
-                to="/acheteur/credits"
-                className="text-accent font-medium hover:underline flex items-center gap-1"
-              >
-                Voir les packs <ArrowRight size={14} />
-              </Link>
-            </div>
+            {/* Credits card */}
+            <Link to="/acheteur/credits" className="block bg-white rounded-xl p-4 border border-gray-100/80 hover:border-gray-200 transition-colors group">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg bg-[#fd7958]/[0.07] flex items-center justify-center shrink-0">
+                  <CreditCard size={16} className="text-[#fd7958]" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm font-medium text-gray-800">Recharger crédits</h3>
+                  <p className="text-[11px] text-gray-400 mt-0.5">Débloquez plus de leads</p>
+                </div>
+                <ArrowRight size={14} className="text-gray-200 group-hover:text-gray-400 mt-1 transition-colors" />
+              </div>
+            </Link>
 
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-              <TrendingUp size={24} className="text-green-500 mb-3" />
-              <h3 className="font-bold text-gray-900 mb-1">Suivre mes conversions</h3>
-              <p className="text-gray-500 text-sm mb-4">Analysez vos performances et votre ROI</p>
-              <Link 
-                to="/acheteur/achats"
-                className="text-accent font-medium hover:underline flex items-center gap-1"
-              >
-                Voir l'historique <ArrowRight size={14} />
-              </Link>
-            </div>
+            {/* Analytics card */}
+            <Link to="/acheteur/achats" className="block bg-white rounded-xl p-4 border border-gray-100/80 hover:border-gray-200 transition-colors group">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
+                  <TrendingUp size={16} className="text-emerald-600" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm font-medium text-gray-800">Conversions & ROI</h3>
+                  <p className="text-[11px] text-gray-400 mt-0.5">Suivez vos performances</p>
+                </div>
+                <ArrowRight size={14} className="text-gray-200 group-hover:text-gray-400 mt-1 transition-colors" />
+              </div>
+            </Link>
           </div>
         </div>
       </div>
