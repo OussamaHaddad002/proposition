@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Search, UserPlus, Shield, Ban, CheckCircle, Eye, Mail, Phone, Building2, Calendar, Download, ChevronLeft, ChevronRight, Edit, Trash2, Users, Activity, TrendingUp, Clock } from 'lucide-react';
-import Layout from '../components/Layout';
-import type { UserRole } from '../types';
+import Layout from '../../components/Layout';
+import type { UserRole } from '../../types';
 
 interface MockUser {
   id: string;

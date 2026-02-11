@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Package, CheckCircle, XCircle, Clock, Eye, Download, Phone, Mail, Building2, TrendingUp } from 'lucide-react';
-import Layout from '../components/Layout';
-import { mockAcheteur, mockLeads } from '../data/mockData';
-import type { Lead } from '../types';
+import AcheteurLayout from '../../components/AcheteurLayout';
+import { mockLeads } from '../../data/mockData';
+import type { Lead } from '../../types';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import TourGuide from '../components/TourGuide';
-import { mesAchatsTourSteps } from '../data/tourSteps';
+import TourGuide from '../../components/TourGuide';
+import { mesAchatsTourSteps } from '../../data/tourSteps';
 
 export default function MesAchatsPage() {
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
@@ -67,7 +67,7 @@ export default function MesAchatsPage() {
   ];
 
   return (
-    <Layout userRole="acheteur" userName={`${mockAcheteur.firstName} ${mockAcheteur.lastName}`}>
+    <AcheteurLayout>
       <div className="space-y-5">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
@@ -325,6 +325,6 @@ export default function MesAchatsPage() {
           onSkip={() => setShowTour(false)}
         />
       )}
-    </Layout>
+    </AcheteurLayout>
   );
 }

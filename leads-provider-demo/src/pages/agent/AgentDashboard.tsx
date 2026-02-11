@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Phone, PhoneCall, PhoneOff, Clock, CheckCircle, XCircle, RotateCcw, Headphones, User, Building2, MapPin } from 'lucide-react';
-import Layout from '../components/Layout';
-import StatCard from '../components/StatCard';
-import { mockAgent, mockLeads } from '../data/mockData';
-import type { Lead } from '../types';
+import Layout from '../../components/Layout';
+import StatCard from '../../components/StatCard';
+import { mockAgent, mockLeads } from '../../data/mockData';
+import type { Lead } from '../../types';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import TourGuide from '../components/TourGuide';
-import { dashboardTourSteps } from '../data/tourSteps';
+import TourGuide from '../../components/TourGuide';
+import { dashboardTourSteps } from '../../data/tourSteps';
 
 export default function AgentDashboard() {
   const [currentLead, setCurrentLead] = useState<Lead | null>(null);

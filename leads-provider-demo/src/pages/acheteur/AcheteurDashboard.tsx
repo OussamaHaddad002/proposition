@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { ShoppingCart, TrendingUp, CreditCard, ArrowRight, Target, Clock, CheckCircle2, AlertCircle, Sparkles } from 'lucide-react';
-import Layout from '../components/Layout';
-import { mockAcheteur, mockLeads, sectorDistribution } from '../data/mockData';
+import AcheteurLayout from '../../components/AcheteurLayout';
+import { mockAcheteur, mockLeads, sectorDistribution } from '../../data/mockData';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import TourGuide from '../components/TourGuide';
-import { dashboardTourSteps } from '../data/tourSteps';
+import TourGuide from '../../components/TourGuide';
+import { dashboardTourSteps } from '../../data/tourSteps';
 
 export default function AcheteurDashboard() {
   const [searchParams] = useSearchParams();
@@ -57,7 +57,7 @@ export default function AcheteurDashboard() {
   ];
 
   return (
-    <Layout userRole="acheteur" userName={`${mockAcheteur.firstName} ${mockAcheteur.lastName}`}>
+    <AcheteurLayout>
       <div className="space-y-6">
 
         {/* Header — clean, flat */}
@@ -72,7 +72,7 @@ export default function AcheteurDashboard() {
               <span className="text-[#fd7958]/70 ml-1">crédits</span>
             </div>
             <Link 
-              to="/acheteur/catalogue"
+              to="/acheteur"
               className="flex items-center gap-2 px-4 py-2 bg-[#fd7958] text-white rounded-lg text-sm font-medium hover:bg-[#e86847] transition-colors"
             >
               <ShoppingCart size={15} />
@@ -212,7 +212,7 @@ export default function AcheteurDashboard() {
                   Leads qualifiés et vérifiés prêts à l'achat
                 </p>
                 <Link 
-                  to="/acheteur/catalogue"
+                  to="/acheteur"
                   className="inline-flex items-center gap-1.5 bg-[#fd7958] text-white px-3.5 py-2 rounded-lg text-xs font-medium hover:bg-[#e86847] transition-colors"
                 >
                   Explorer <ArrowRight size={13} />
@@ -259,6 +259,6 @@ export default function AcheteurDashboard() {
           onSkip={() => setShowTour(false)}
         />
       )}
-    </Layout>
+    </AcheteurLayout>
   );
 }

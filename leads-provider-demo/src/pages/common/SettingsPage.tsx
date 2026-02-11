@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { User, Lock, Bell, Globe, Shield, LogOut, Camera, Mail, Phone, Building2, MapPin, Save, Eye, EyeOff } from 'lucide-react';
-import Layout from '../components/Layout';
-import type { UserRole } from '../types';
+import Layout from '../../components/Layout';
+import type { UserRole } from '../../types';
 
 interface SettingsPageProps {
   userRole?: UserRole;

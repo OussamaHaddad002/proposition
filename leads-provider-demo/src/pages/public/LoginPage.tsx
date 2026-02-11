@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Users, Phone, ShoppingCart, Shield } from 'lucide-react';
-import type { UserRole } from '../types';
-import { useAuth } from '../App';
+import type { UserRole } from '../../types';
+import { useAuth } from '../../App';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -189,6 +189,8 @@ export default function LoginPage() {
 
       {/* Bottom bar */}
       <div className="text-center py-4 text-[11px] text-gray-300">
+        <Link to="/" className="hover:text-[#fd7958] transition-colors">← Retour à l'accueil</Link>
+        <span className="mx-2">·</span>
         © 2026 Leads Provider
       </div>
     </div>

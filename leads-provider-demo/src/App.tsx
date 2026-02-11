@@ -2,21 +2,34 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useState, createContext, useContext, useEffect } from 'react';
 import './index.css';
 
-// Pages
-import LoginPage from './pages/LoginPage';
-import FournisseurDashboard from './pages/FournisseurDashboard';
-import AgentDashboard from './pages/AgentDashboard';
-import AcheteurDashboard from './pages/AcheteurDashboard';
-import AdminDashboard from './pages/AdminDashboard';
-import CataloguePage from './pages/CataloguePage';
-import MesAchatsPage from './pages/MesAchatsPage';
-import MesLeadsPage from './pages/MesLeadsPage';
-import HistoriqueAppelsPage from './pages/HistoriqueAppelsPage';
-import SettingsPage from './pages/SettingsPage';
-import CreditsPage from './pages/CreditsPage';
-import InscriptionPage from './pages/InscriptionPage';
-import AdminLeadsPage from './pages/AdminLeadsPage';
-import AdminUsersPage from './pages/AdminUsersPage';
+// Pages — Public
+import HomePage from './pages/public/HomePage';
+import LoginPage from './pages/public/LoginPage';
+import InscriptionPage from './pages/public/InscriptionPage';
+import PublicCataloguePage from './pages/public/PublicCataloguePage';
+
+// Pages — Fournisseur
+import FournisseurDashboard from './pages/fournisseur/FournisseurDashboard';
+import MesLeadsPage from './pages/fournisseur/MesLeadsPage';
+
+// Pages — Acheteur
+import AcheteurDashboard from './pages/acheteur/AcheteurDashboard';
+import CataloguePage from './pages/acheteur/CataloguePage';
+import MesAchatsPage from './pages/acheteur/MesAchatsPage';
+import CreditsPage from './pages/acheteur/CreditsPage';
+import AcheteurSettingsPage from './pages/acheteur/AcheteurSettingsPage';
+
+// Pages — Agent
+import AgentDashboard from './pages/agent/AgentDashboard';
+import HistoriqueAppelsPage from './pages/agent/HistoriqueAppelsPage';
+
+// Pages — Admin
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminLeadsPage from './pages/admin/AdminLeadsPage';
+import AdminUsersPage from './pages/admin/AdminUsersPage';
+
+// Pages — Common
+import SettingsPage from './pages/common/SettingsPage';
 import type { UserRole } from './types';
 
 // Auth Context
@@ -61,8 +74,10 @@ function App() {
     <AuthContext.Provider value={{ role, setRole }}>
       <Router>
         <Routes>
-          {/* Login Page */}
-          <Route path="/" element={<LoginPage />} />
+          {/* Public Pages */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/explore" element={<PublicCataloguePage />} />
           
           {/* Inscription & Onboarding */}
           <Route path="/inscription" element={<InscriptionPage />} />
@@ -88,20 +103,20 @@ function App() {
             }
           />
           
-          {/* Acheteur Dashboard */}
+          {/* Acheteur — Catalogue is the main view */}
           <Route
             path="/acheteur"
             element={
               <ProtectedRoute allowedRole="acheteur">
-                <AcheteurDashboard />
+                <CataloguePage />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/acheteur/catalogue"
+            path="/acheteur/dashboard"
             element={
               <ProtectedRoute allowedRole="acheteur">
-                <CataloguePage />
+                <AcheteurDashboard />
               </ProtectedRoute>
             }
           />
@@ -125,7 +140,7 @@ function App() {
             path="/acheteur/settings"
             element={
               <ProtectedRoute allowedRole="acheteur">
-                <SettingsPage />
+                <AcheteurSettingsPage />
               </ProtectedRoute>
             }
           />

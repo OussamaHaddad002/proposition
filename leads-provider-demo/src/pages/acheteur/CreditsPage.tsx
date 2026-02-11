@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { CreditCard, Plus, History, TrendingUp, Gift, Zap, Star, Check, Download, ChevronRight, Wallet } from 'lucide-react';
-import Layout from '../components/Layout';
-import { mockAcheteur, creditPacks } from '../data/mockData';
+import AcheteurLayout from '../../components/AcheteurLayout';
+import { mockAcheteur, creditPacks } from '../../data/mockData';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import TourGuide from '../components/TourGuide';
-import { creditsTourSteps } from '../data/tourSteps';
+import TourGuide from '../../components/TourGuide';
+import { creditsTourSteps } from '../../data/tourSteps';
 
 export default function CreditsPage() {
   const [selectedPack, setSelectedPack] = useState<string | null>(null);
@@ -60,7 +60,7 @@ export default function CreditsPage() {
   ];
 
   return (
-    <Layout userRole="acheteur" userName={`${mockAcheteur.firstName} ${mockAcheteur.lastName}`}>
+    <AcheteurLayout>
       <div className="space-y-5">
         {/* Header */}
         <div>
@@ -275,6 +275,6 @@ export default function CreditsPage() {
           onSkip={() => setShowTour(false)}
         />
       )}
-    </Layout>
+    </AcheteurLayout>
   );
 }

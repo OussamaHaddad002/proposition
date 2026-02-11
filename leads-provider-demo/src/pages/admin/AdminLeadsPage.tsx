@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Search, Download, Eye, Trash2, CheckCircle, XCircle, Clock, Play, ArrowUpDown, ChevronLeft, ChevronRight, Building2, MapPin } from 'lucide-react';
-import Layout from '../components/Layout';
-import { mockLeads, sectorDistribution } from '../data/mockData';
-import type { Lead } from '../types';
+import Layout from '../../components/Layout';
+import { mockLeads, sectorDistribution } from '../../data/mockData';
+import type { Lead } from '../../types';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
 export default function AdminLeadsPage() {

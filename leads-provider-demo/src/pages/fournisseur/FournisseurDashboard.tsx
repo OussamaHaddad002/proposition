@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Upload, Users, Euro, FileSpreadsheet, CheckCircle, XCircle, Clock, Download } from 'lucide-react';
-import Layout from '../components/Layout';
-import StatCard from '../components/StatCard';
-import { mockFournisseur, monthlyStats } from '../data/mockData';
+import Layout from '../../components/Layout';
+import StatCard from '../../components/StatCard';
+import { mockFournisseur, monthlyStats } from '../../data/mockData';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import TourGuide from '../components/TourGuide';
-import { dashboardTourSteps } from '../data/tourSteps';
+import TourGuide from '../../components/TourGuide';
+import { dashboardTourSteps } from '../../data/tourSteps';
 
 export default function FournisseurDashboard() {
   const [dragActive, setDragActive] = useState(false);

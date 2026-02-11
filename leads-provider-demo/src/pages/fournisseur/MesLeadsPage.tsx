@@ -1,13 +1,14 @@
 import { useState } from 'react';
-import { FileSpreadsheet, Upload, CheckCircle, Clock, Eye, Trash2, Download, TrendingUp, DollarSign } from 'lucide-react';
-import Layout from '../components/Layout';
-import { mockFournisseur, mockLeads } from '../data/mockData';
-import type { Lead } from '../types';
+import { FileSpreadsheet, Upload, CheckCircle, Clock, Eye, Trash2, Download, TrendingUp, DollarSign, X, Phone, Mail, Building2, MapPin, Globe, Calendar, Headphones, Play, Pause, Mic, XCircle } from 'lucide-react';
+import Layout from '../../components/Layout';
+import { mockFournisseur, mockLeads } from '../../data/mockData';
+import type { Lead } from '../../types';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 export default function MesLeadsPage() {
-  const [, setSelectedLead] = useState<Lead | null>(null);
+  const [selectedLead, setSelectedLead] = useState<(Lead & { uploadDate: string; earnings?: number }) | null>(null);
   const [filterStatus, setFilterStatus] = useState<'all' | 'pending' | 'qualified' | 'rejected' | 'sold'>('all');
+  const [isPlaying, setIsPlaying] = useState(false);
 
   // Mes leads avec statuts variés
   const myLeads = mockLeads.slice(0, 35).map((lead, _index) => ({
@@ -59,6 +60,7 @@ export default function MesLeadsPage() {
   };
 
   return (
+    <>
     <Layout userRole="fournisseur" userName={`${mockFournisseur.firstName} ${mockFournisseur.lastName}`}>
       <div className="space-y-6">
         {/* Header */}
@@ -280,5 +282,232 @@ export default function MesLeadsPage() {
         </div>
       </div>
     </Layout>
+
+    {/* Lead Detail Modal */}
+    {selectedLead && (
+      <div className="fixed inset-0 bg-black/40 backdrop-blur-[2px] flex items-center justify-center z-50 p-4" onClick={() => { setSelectedLead(null); setIsPlaying(false); }}>
+        <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden animate-fade-in" onClick={e => e.stopPropagation()}>
+          {/* Modal Header */}
+          <div className="bg-[#344a5e] p-5 text-white relative">
+            <button
+              onClick={() => { setSelectedLead(null); setIsPlaying(false); }}
+              className="absolute top-3 right-3 p-1.5 hover:bg-white/10 rounded-lg transition-colors"
+            >
+              <X size={18} />
+            </button>
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-white/15 rounded-full flex items-center justify-center text-lg font-bold">
+                {selectedLead.firstName.charAt(0)}{selectedLead.lastName.charAt(0)}
+              </div>
+              <div>
+                <h2 className="text-lg font-bold">{selectedLead.firstName} {selectedLead.lastName}</h2>
+                <p className="text-white/70 text-sm">{selectedLead.company}</p>
+              </div>
+              <div className="ml-auto">
+                {(() => {
+                  const badge = getStatusBadge(selectedLead.status);
+                  return <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${badge.bg} ${badge.text}`}>{badge.label}</span>;
+                })()}
+              </div>
+            </div>
+          </div>
+
+          <div className="p-5 overflow-y-auto max-h-[calc(90vh-180px)] space-y-5">
+            {/* Contact & Info */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-3">
+                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Contact</h3>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2.5 text-sm">
+                    <Mail size={15} className="text-gray-400" />
+                    <span className="text-gray-700">{selectedLead.email}</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 text-sm">
+                    <Phone size={15} className="text-gray-400" />
+                    <span className="text-gray-700">{selectedLead.phone}</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 text-sm">
+                    <Building2 size={15} className="text-gray-400" />
+                    <span className="text-gray-700">{selectedLead.company}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-3">
+                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Localisation</h3>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2.5 text-sm">
+                    <MapPin size={15} className="text-gray-400" />
+                    <span className="text-gray-700">{selectedLead.city}, {selectedLead.region}</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 text-sm">
+                    <Globe size={15} className="text-gray-400" />
+                    <span className="text-gray-700">{selectedLead.sector}</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 text-sm">
+                    <Calendar size={15} className="text-gray-400" />
+                    <span className="text-gray-700">{new Date(selectedLead.uploadDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Score + Price row */}
+            <div className="flex items-center gap-3">
+              <div className="flex-1 bg-gray-50 rounded-xl p-3 flex items-center gap-3">
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold ${
+                  selectedLead.score >= 80 ? 'bg-emerald-100 text-emerald-700' :
+                  selectedLead.score >= 60 ? 'bg-blue-100 text-blue-700' :
+                  'bg-amber-100 text-amber-700'
+                }`}>
+                  {selectedLead.score}
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400">Score IA</p>
+                  <p className="text-sm font-semibold text-gray-700">{selectedLead.score >= 80 ? 'Excellent' : selectedLead.score >= 60 ? 'Bon' : 'Moyen'}</p>
+                </div>
+              </div>
+              <div className="flex-1 bg-gray-50 rounded-xl p-3 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-[#fd7958]/[0.08] flex items-center justify-center">
+                  <DollarSign size={18} className="text-[#fd7958]" />
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400">Prix</p>
+                  <p className="text-sm font-semibold text-[#fd7958]">{selectedLead.price}€</p>
+                </div>
+              </div>
+              {selectedLead.earnings && (
+                <div className="flex-1 bg-gray-50 rounded-xl p-3 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center">
+                    <TrendingUp size={18} className="text-emerald-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400">Gains</p>
+                    <p className="text-sm font-semibold text-emerald-600">{selectedLead.earnings.toFixed(0)}€</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Source info */}
+            <div className="bg-gray-50 rounded-xl p-3">
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div><span className="text-gray-400">Source:</span> <span className="font-medium text-gray-700">{selectedLead.source}</span></div>
+                <div><span className="text-gray-400">Canal:</span> <span className="font-medium text-gray-700">{selectedLead.channel}</span></div>
+              </div>
+            </div>
+
+            {/* Qualification Recording */}
+            {(selectedLead.status === 'qualified' || selectedLead.status === 'sold') && (
+              <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center">
+                    <Headphones size={16} className="text-emerald-600" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-emerald-800">Enregistrement de qualification</h4>
+                    <p className="text-[11px] text-emerald-600/70">Lead qualifié par l'agent \u2014 Appel du {new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toLocaleDateString('fr-FR')}</p>
+                  </div>
+                </div>
+                {/* Audio Player */}
+                <div className="bg-white rounded-lg p-3 flex items-center gap-3">
+                  <button
+                    onClick={() => setIsPlaying(!isPlaying)}
+                    className="w-9 h-9 bg-emerald-500 rounded-full flex items-center justify-center text-white hover:bg-emerald-600 transition-colors shrink-0"
+                  >
+                    {isPlaying ? <Pause size={15} /> : <Play size={15} className="ml-0.5" />}
+                  </button>
+                  <div className="flex-1">
+                    <div className="bg-emerald-100 rounded-full h-1.5 overflow-hidden">
+                      <div className={`bg-emerald-500 h-1.5 rounded-full transition-all duration-300 ${isPlaying ? 'w-1/3' : 'w-0'}`} />
+                    </div>
+                    <div className="flex justify-between text-[10px] text-gray-400 mt-1">
+                      <span>{isPlaying ? '0:58' : '0:00'}</span>
+                      <span>2:45</span>
+                    </div>
+                  </div>
+                  <Mic size={14} className="text-emerald-400 shrink-0" />
+                </div>
+                {/* Summary */}
+                <p className="text-xs text-emerald-700/80 mt-2.5 leading-relaxed">
+                  <span className="font-semibold">Résumé :</span> Le prospect a confirmé son intérêt pour le service. Budget validé, décision prévue sous 2 semaines. Interlocuteur décisionnaire.
+                </p>
+              </div>
+            )}
+
+            {/* Non-qualification Recording */}
+            {selectedLead.status === 'rejected' && (
+              <div className="bg-red-50 rounded-xl p-4 border border-red-100">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center">
+                    <XCircle size={16} className="text-red-500" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-red-800">Enregistrement de non-qualification</h4>
+                    <p className="text-[11px] text-red-500/70">Lead non qualifié par l'agent — Appel du {new Date(Date.now() - Math.random() * 14 * 24 * 60 * 60 * 1000).toLocaleDateString('fr-FR')}</p>
+                  </div>
+                </div>
+                {/* Audio Player */}
+                <div className="bg-white rounded-lg p-3 flex items-center gap-3">
+                  <button
+                    onClick={() => setIsPlaying(!isPlaying)}
+                    className="w-9 h-9 bg-red-500 rounded-full flex items-center justify-center text-white hover:bg-red-600 transition-colors shrink-0"
+                  >
+                    {isPlaying ? <Pause size={15} /> : <Play size={15} className="ml-0.5" />}
+                  </button>
+                  <div className="flex-1">
+                    <div className="bg-red-100 rounded-full h-1.5 overflow-hidden">
+                      <div className={`bg-red-500 h-1.5 rounded-full transition-all duration-300 ${isPlaying ? 'w-1/3' : 'w-0'}`} />
+                    </div>
+                    <div className="flex justify-between text-[10px] text-gray-400 mt-1">
+                      <span>{isPlaying ? '0:42' : '0:00'}</span>
+                      <span>1:30</span>
+                    </div>
+                  </div>
+                  <Mic size={14} className="text-red-400 shrink-0" />
+                </div>
+                {/* Reason */}
+                <p className="text-xs text-red-700/80 mt-2.5 leading-relaxed">
+                  <span className="font-semibold">Motif :</span> Le prospect n'est pas intéressé par le service. Pas de budget alloué actuellement, contact non décisionnaire.
+                </p>
+              </div>
+            )}
+
+            {/* Pending status info */}
+            {selectedLead.status === 'pending' && (
+              <div className="bg-amber-50 rounded-xl p-4 border border-amber-100">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
+                    <Clock size={16} className="text-amber-600" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-amber-800">En attente de qualification</h4>
+                    <p className="text-xs text-amber-600/70">Ce lead est en cours de traitement par notre équipe d'agents. L'enregistrement sera disponible une fois l'appel effectué.</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Notes */}
+            {selectedLead.notes && (
+              <div className="bg-gray-50 rounded-xl p-3 border border-gray-100">
+                <h4 className="text-xs font-semibold text-gray-500 mb-1">Notes</h4>
+                <p className="text-sm text-gray-600">{selectedLead.notes}</p>
+              </div>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="border-t border-gray-100 p-4 flex justify-end">
+            <button
+              onClick={() => { setSelectedLead(null); setIsPlaying(false); }}
+              className="px-5 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors"
+            >
+              Fermer
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 }

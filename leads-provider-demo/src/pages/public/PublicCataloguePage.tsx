@@ -1,31 +1,37 @@
-import { useState, useEffect } from 'react';
-import { ShoppingCart, Search, SlidersHorizontal } from 'lucide-react';
-import { useSearchParams } from 'react-router-dom';
-import Layout from '../components/Layout';
-import LeadCard from '../components/LeadCard';
-import LeadDetailModal from '../components/LeadDetailModal';
-import TourGuide from '../components/TourGuide';
-import { mockAcheteur, mockLeads, sectorDistribution } from '../data/mockData';
-import { catalogueTourSteps } from '../data/tourSteps';
-import type { Lead } from '../types';
+import { useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import {
+  Search,
+  SlidersHorizontal,
+  Zap,
+  Lock,
+  ArrowRight,
+  ChevronLeft,
+} from 'lucide-react';
+import LeadCard from '../../components/LeadCard';
+import LeadDetailModal from '../../components/LeadDetailModal';
+import { mockLeads, sectorDistribution } from '../../data/mockData';
+import type { Lead } from '../../types';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
-export default function CataloguePage() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [showTour, setShowTour] = useState(false);
+export default function PublicCataloguePage() {
+  const [searchParams] = useSearchParams();
+  const initialSearch = searchParams.get('search') || '';
+  const initialSector = searchParams.get('sector') || 'all';
+
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedSector, setSelectedSector] = useState('all');
+  const [searchTerm, setSearchTerm] = useState(initialSearch);
+  const [selectedSector, setSelectedSector] = useState(initialSector);
   const [selectedRegion, setSelectedRegion] = useState('all');
   const [minScore, setMinScore] = useState(60);
-  const [cart, setCart] = useState<Lead[]>([]);
 
   const availableLeads = mockLeads.filter(l => l.status === 'qualified' && l.score >= minScore);
-  
+
   const filteredLeads = availableLeads.filter(lead => {
     const matchesSearch = lead.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          lead.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         lead.company.toLowerCase().includes(searchTerm.toLowerCase());
+                         lead.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         lead.sector.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesSector = selectedSector === 'all' || lead.sector === selectedSector;
     const matchesRegion = selectedRegion === 'all' || lead.region === selectedRegion;
     return matchesSearch && matchesSector && matchesRegion;
@@ -34,46 +40,57 @@ export default function CataloguePage() {
   const sectors = ['all', ...new Set(mockLeads.map(l => l.sector))];
   const regions = ['all', ...new Set(mockLeads.map(l => l.region))];
 
-  const addToCart = (lead: Lead) => {
-    if (!cart.find(l => l.id === lead.id)) {
-      setCart([...cart, lead]);
-    }
-    setSelectedLead(null);
-  };
-
-  const removeFromCart = (leadId: string) => {
-    setCart(cart.filter(l => l.id !== leadId));
-  };
-
-  const totalCartPrice = cart.reduce((sum, lead) => sum + lead.price, 0);
-
-  useEffect(() => {
-    if (searchParams.get('tour') === 'true') {
-      setShowTour(true);
-      setSearchParams({});
-    }
-  }, [searchParams, setSearchParams]);
-
   return (
-    <Layout userRole="acheteur" userName={`${mockAcheteur.firstName} ${mockAcheteur.lastName}`}>
-      <div className="space-y-5">
+    <div className="min-h-screen bg-[#f8f9fb]">
+      {/* Navbar */}
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100/80">
+        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+          <div className="flex items-center gap-6">
+            <Link to="/" className="flex items-center gap-2">
+              <div className="w-7 h-7 bg-[#fd7958] rounded-lg flex items-center justify-center">
+                <span className="text-white text-xs font-bold">LP</span>
+              </div>
+              <span className="text-sm font-bold text-gray-800 tracking-tight">
+                Leads<span className="text-[#fd7958]">Provider</span>
+              </span>
+            </Link>
+            <Link
+              to="/"
+              className="hidden md:flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <ChevronLeft size={14} />
+              Accueil
+            </Link>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Link
+              to="/login"
+              className="px-4 py-1.5 text-sm font-medium text-gray-600 hover:text-gray-800 transition-colors"
+            >
+              Connexion
+            </Link>
+            <Link
+              to="/inscription"
+              className="px-4 py-1.5 bg-[#fd7958] text-white rounded-lg text-sm font-medium hover:bg-[#e86847] transition-colors"
+            >
+              Rejoindre
+            </Link>
+          </div>
+        </div>
+      </nav>
+
+      {/* Page Content */}
+      <div className="max-w-6xl mx-auto px-6 py-6 space-y-5">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
-            <h1 className="text-xl font-semibold text-gray-900">Catalogue</h1>
-            <p className="text-sm text-gray-400 mt-0.5">Leads qualifiés et exclusifs</p>
+            <h1 className="text-xl font-semibold text-gray-900">Catalogue de leads</h1>
+            <p className="text-sm text-gray-400 mt-0.5">Explorez nos leads qualifiés et vérifiés par IA</p>
           </div>
-          <div className="flex items-center gap-3">
-            <div data-tour="credits-badge" className="px-3 py-1.5 rounded-lg bg-[#fd7958]/[0.08] text-sm">
-              <span className="font-semibold text-[#fd7958]">{mockAcheteur.credits}</span>
-              <span className="text-[#fd7958]/70 ml-1">crédits</span>
-            </div>
-            {cart.length > 0 && (
-              <button className="relative flex items-center gap-2 px-4 py-2 bg-[#fd7958] text-white rounded-lg text-sm font-medium hover:bg-[#e86847] transition-colors">
-                <ShoppingCart size={15} />
-                Panier ({cart.length})
-              </button>
-            )}
+          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#fd7958]/[0.08] text-xs font-medium text-[#fd7958]">
+            <Zap size={13} />
+            {availableLeads.length} leads disponibles
           </div>
         </div>
 
@@ -81,7 +98,7 @@ export default function CataloguePage() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
           {/* Filters Panel */}
           <div className="lg:col-span-1 space-y-4">
-            <div data-tour="filters-panel" className="bg-white rounded-xl p-5 border border-gray-100/80">
+            <div className="bg-white rounded-xl p-5 border border-gray-100/80">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
                   <SlidersHorizontal size={15} className="text-gray-400" />
@@ -99,14 +116,14 @@ export default function CataloguePage() {
                   Réinitialiser
                 </button>
               </div>
-              
+
               {/* Search */}
               <div className="mb-4">
                 <div className="relative">
                   <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" />
                   <input
                     type="text"
-                    placeholder="Nom, entreprise..."
+                    placeholder="Nom, entreprise, secteur..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-100 rounded-lg text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#fd7958]/20 focus:border-[#fd7958]/30 focus:bg-white transition-all"
@@ -145,7 +162,7 @@ export default function CataloguePage() {
               </div>
 
               {/* Score Filter */}
-              <div data-tour="score-slider" className="mb-4">
+              <div className="mb-4">
                 <label className="flex items-center justify-between text-xs font-medium text-gray-500 mb-1.5">
                   <span>Score minimum</span>
                   <span className="text-[#fd7958] font-bold text-sm">{minScore}</span>
@@ -182,7 +199,7 @@ export default function CataloguePage() {
             </div>
 
             {/* Sector Distribution */}
-            <div data-tour="sector-chart" className="bg-white rounded-xl p-5 border border-gray-100/80">
+            <div className="bg-white rounded-xl p-5 border border-gray-100/80">
               <h3 className="text-sm font-semibold text-gray-800 mb-3">Répartition secteurs</h3>
               <ResponsiveContainer width="100%" height={150}>
                 <PieChart>
@@ -213,6 +230,23 @@ export default function CataloguePage() {
                 ))}
               </div>
             </div>
+
+            {/* CTA Sign Up Card */}
+            <div className="bg-white rounded-xl p-5 border border-gray-100/80 relative overflow-hidden">
+              <div className="absolute -top-6 -right-6 w-20 h-20 bg-[#fd7958]/[0.06] rounded-full" />
+              <Lock size={18} className="text-[#fd7958] mb-2" />
+              <h3 className="text-sm font-semibold text-gray-800 mb-1">Accès complet</h3>
+              <p className="text-xs text-gray-400 leading-relaxed mb-3">
+                Inscrivez-vous pour voir les contacts complets, acheter des leads et bénéficier de notre scoring IA.
+              </p>
+              <Link
+                to="/inscription"
+                className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#fd7958] text-white rounded-lg text-xs font-medium hover:bg-[#e86847] transition-colors"
+              >
+                Créer un compte
+                <ArrowRight size={13} />
+              </Link>
+            </div>
           </div>
 
           {/* Leads Grid */}
@@ -229,19 +263,36 @@ export default function CataloguePage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-              {filteredLeads.slice(0, 12).map((lead, index) => (
-                <div key={lead.id} data-tour={index === 0 ? "lead-card" : undefined}>
-                  <LeadCard
-                    lead={lead}
-                    onView={() => setSelectedLead(lead)}
-                    onAction={() => addToCart(lead)}
-                    actionLabel="Ajouter"
-                    showPrice
-                    anonymous
-                  />
-                </div>
+              {filteredLeads.slice(0, 12).map((lead) => (
+                <LeadCard
+                  key={lead.id}
+                  lead={lead}
+                  onView={() => setSelectedLead(lead)}
+                  onAction={() => setSelectedLead(lead)}
+                  actionLabel="Voir détails"
+                  showPrice
+                  anonymous
+                />
               ))}
             </div>
+
+            {filteredLeads.length === 0 && (
+              <div className="text-center py-16">
+                <Search size={32} className="mx-auto text-gray-200 mb-3" />
+                <p className="text-sm text-gray-400">Aucun lead ne correspond à vos critères</p>
+                <button
+                  onClick={() => {
+                    setSearchTerm('');
+                    setSelectedSector('all');
+                    setSelectedRegion('all');
+                    setMinScore(60);
+                  }}
+                  className="mt-3 text-xs text-[#fd7958] hover:underline font-medium"
+                >
+                  Réinitialiser les filtres
+                </button>
+              </div>
+            )}
 
             {filteredLeads.length > 12 && (
               <div className="text-center mt-6">
@@ -250,73 +301,51 @@ export default function CataloguePage() {
                 </button>
               </div>
             )}
+
+            {/* Bottom CTA Banner */}
+            <div className="mt-6 bg-white rounded-xl p-6 border border-gray-100/80 text-center relative overflow-hidden">
+              <div className="absolute -top-10 -left-10 w-28 h-28 bg-[#fd7958]/[0.04] rounded-full" />
+              <div className="absolute -bottom-8 -right-8 w-24 h-24 bg-[#344a5e]/[0.03] rounded-full" />
+              <div className="relative">
+                <h3 className="text-base font-semibold text-gray-800 mb-1">
+                  Prêt à accéder aux leads complets ?
+                </h3>
+                <p className="text-xs text-gray-400 mb-4 max-w-sm mx-auto">
+                  Créez votre compte gratuitement et commencez à acheter des leads qualifiés dès aujourd'hui.
+                </p>
+                <div className="flex items-center justify-center gap-3">
+                  <Link
+                    to="/inscription"
+                    className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-[#fd7958] text-white rounded-lg text-sm font-medium hover:bg-[#e86847] transition-colors"
+                  >
+                    Commencer gratuitement
+                    <ArrowRight size={14} />
+                  </Link>
+                  <Link
+                    to="/login"
+                    className="px-5 py-2.5 border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+                  >
+                    Se connecter
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-
-        {/* Cart Summary */}
-        {cart.length > 0 && (
-          <div className="fixed bottom-5 right-5 bg-white rounded-2xl shadow-[0_4px_40px_rgba(0,0,0,0.1)] border border-gray-100/80 p-5 w-72 animate-slide-in">
-            <h3 className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
-              <ShoppingCart size={16} className="text-[#fd7958]" />
-              Panier ({cart.length})
-            </h3>
-            <div className="space-y-2 max-h-36 overflow-y-auto mb-4">
-              {cart.map((lead) => (
-                <div key={lead.id} className="flex items-center justify-between bg-gray-50 rounded-lg p-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 bg-[#344a5e]/[0.06] rounded-lg flex items-center justify-center text-[10px] font-bold text-[#344a5e]">
-                      {lead.firstName.charAt(0)}{lead.lastName.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="text-xs font-medium text-gray-800">{lead.company}</p>
-                      <p className="text-[10px] text-gray-400">{lead.sector}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-bold text-[#fd7958]">{lead.price}€</span>
-                    <button
-                      onClick={() => removeFromCart(lead.id)}
-                      className="text-gray-300 hover:text-red-500 text-sm"
-                    >
-                      ×
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="border-t border-gray-100 pt-3">
-              <div className="flex justify-between mb-3">
-                <span className="text-xs text-gray-400">Total</span>
-                <span className="text-lg font-bold text-[#fd7958]">{totalCartPrice}€</span>
-              </div>
-              <button className="w-full py-2.5 bg-[#fd7958] text-white rounded-lg text-sm font-medium hover:bg-[#e86847] transition-colors">
-                Procéder au paiement
-              </button>
-              <p className="text-[10px] text-gray-300 text-center mt-2">
-                Utilise {cart.length} crédit{cart.length > 1 ? 's' : ''}
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Lead Detail Modal */}
-        {selectedLead && (
-          <LeadDetailModal
-            lead={selectedLead}
-            onClose={() => setSelectedLead(null)}
-            onAction={addToCart}
-            actionLabel="Ajouter au panier"
-          />
-        )}
-
-        {/* Tour Guide */}
-        <TourGuide
-          steps={catalogueTourSteps}
-          isActive={showTour}
-          onComplete={() => setShowTour(false)}
-          onSkip={() => setShowTour(false)}
-        />
       </div>
-    </Layout>
+
+      {/* Lead Detail Modal — public version: CTA to sign up */}
+      {selectedLead && (
+        <LeadDetailModal
+          lead={selectedLead}
+          onClose={() => setSelectedLead(null)}
+          onAction={() => {
+            setSelectedLead(null);
+            window.location.href = '/inscription';
+          }}
+          actionLabel="S'inscrire pour acheter"
+        />
+      )}
+    </div>
   );
 }

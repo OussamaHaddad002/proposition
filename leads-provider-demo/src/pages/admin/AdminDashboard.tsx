@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Users, TrendingUp, DollarSign, Activity, AlertTriangle, CheckCircle2, Server, Database, Cpu, Settings, UserPlus, Ban, Eye, MoreVertical, Brain, Gauge, Zap } from 'lucide-react';
-import Layout from '../components/Layout';
-import StatCard from '../components/StatCard';
-import { mockLeads, monthlyStats } from '../data/mockData';
+import Layout from '../../components/Layout';
+import StatCard from '../../components/StatCard';
+import { mockLeads, monthlyStats } from '../../data/mockData';
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import TourGuide from '../components/TourGuide';
-import { dashboardTourSteps } from '../data/tourSteps';
+import TourGuide from '../../components/TourGuide';
+import { dashboardTourSteps } from '../../data/tourSteps';
 
 export default function AdminDashboard() {
   const [selectedTab, setSelectedTab] = useState<'overview' | 'users' | 'ai' | 'system'>('overview');

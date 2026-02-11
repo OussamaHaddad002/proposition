@@ -4,7 +4,7 @@ import {
   Mail, Lock, Eye, EyeOff, ArrowRight, ArrowLeft, User, Phone, Building2,
   ShoppingCart, Users, Shield, CheckCircle2, MapPin, Briefcase, Globe, Check
 } from 'lucide-react';
-import type { UserRole } from '../types';
+import type { UserRole } from '../../types';
 
 // Steps: 1=Role, 2=Infos, 3=Entreprise, 4=Préférences (acheteur), 5=Vérification email, 6=Terminé
 type Step = 1 | 2 | 3 | 4 | 5 | 6;
