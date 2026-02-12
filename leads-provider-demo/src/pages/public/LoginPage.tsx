@@ -178,9 +178,9 @@ export default function LoginPage() {
                 <Link to="/inscription" className="hover:text-[#fd7958] transition-colors">
                   Créer un compte
                 </Link>
-                <button type="button" className="hover:text-[#fd7958] transition-colors">
+                <Link to="/forgot-password" className="hover:text-[#fd7958] transition-colors">
                   Mot de passe oublié ?
-                </button>
+                </Link>
               </div>
             </div>
           </div>

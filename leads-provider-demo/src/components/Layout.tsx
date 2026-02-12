@@ -13,7 +13,14 @@ import {
   Bell,
   ChevronDown,
   Search,
-  CreditCard
+  CreditCard,
+  FileSpreadsheet,
+  FolderOpen,
+  Banknote,
+  Headphones,
+  DollarSign,
+  Package,
+  TrendingUp
 } from 'lucide-react';
 import type { UserRole } from '../types';
 
@@ -27,11 +34,14 @@ const menuItems: Record<UserRole, { path: string; label: string; icon: React.Rea
   fournisseur: [
     { path: '/fournisseur', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
     { path: '/fournisseur/leads', label: 'Mes Leads', icon: <Upload size={18} /> },
+    { path: '/fournisseur/fichiers', label: 'Mes Fichiers', icon: <FolderOpen size={18} /> },
+    { path: '/fournisseur/virements', label: 'Virements', icon: <Banknote size={18} /> },
     { path: '/fournisseur/settings', label: 'Paramètres', icon: <Settings size={18} /> },
   ],
   agent: [
     { path: '/agent', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
     { path: '/agent/historique', label: 'Historique Appels', icon: <Phone size={18} /> },
+    { path: '/agent/imports', label: 'Imports', icon: <FileSpreadsheet size={18} /> },
     { path: '/agent/settings', label: 'Paramètres', icon: <Settings size={18} /> },
   ],
   acheteur: [
@@ -45,6 +55,11 @@ const menuItems: Record<UserRole, { path: string; label: string; icon: React.Rea
     { path: '/admin', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
     { path: '/admin/leads', label: 'Tous les Leads', icon: <Users size={18} /> },
     { path: '/admin/utilisateurs', label: 'Utilisateurs', icon: <Users size={18} /> },
+    { path: '/admin/imports', label: 'Imports', icon: <FileSpreadsheet size={18} /> },
+    { path: '/admin/audios', label: 'Audios', icon: <Headphones size={18} /> },
+    { path: '/admin/paiements', label: 'Paiements', icon: <DollarSign size={18} /> },
+    { path: '/admin/credits', label: 'Crédits', icon: <Package size={18} /> },
+    { path: '/admin/gains', label: 'Gains Fourn.', icon: <TrendingUp size={18} /> },
     { path: '/admin/settings', label: 'Paramètres', icon: <Settings size={18} /> },
   ],
 };

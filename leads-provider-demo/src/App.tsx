@@ -7,10 +7,13 @@ import HomePage from './pages/public/HomePage';
 import LoginPage from './pages/public/LoginPage';
 import InscriptionPage from './pages/public/InscriptionPage';
 import PublicCataloguePage from './pages/public/PublicCataloguePage';
+import ForgotPasswordPage from './pages/public/ForgotPasswordPage';
 
 // Pages — Fournisseur
 import FournisseurDashboard from './pages/fournisseur/FournisseurDashboard';
 import MesLeadsPage from './pages/fournisseur/MesLeadsPage';
+import MesFichiersPage from './pages/fournisseur/MesFichiersPage';
+import VirementsPage from './pages/fournisseur/VirementsPage';
 
 // Pages — Acheteur
 import AcheteurDashboard from './pages/acheteur/AcheteurDashboard';
@@ -21,11 +24,17 @@ import AcheteurSettingsPage from './pages/acheteur/AcheteurSettingsPage';
 // Pages — Agent
 import AgentDashboard from './pages/agent/AgentDashboard';
 import HistoriqueAppelsPage from './pages/agent/HistoriqueAppelsPage';
+import AgentImportsPage from './pages/agent/ImportsPage';
 
 // Pages — Admin
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminLeadsPage from './pages/admin/AdminLeadsPage';
 import AdminUsersPage from './pages/admin/AdminUsersPage';
+import AdminImportsPage from './pages/admin/AdminImportsPage';
+import AdminAudiosPage from './pages/admin/AdminAudiosPage';
+import AdminPaiementsPage from './pages/admin/AdminPaiementsPage';
+import AdminCreditsPage from './pages/admin/AdminCreditsPage';
+import AdminGainsPage from './pages/admin/AdminGainsPage';
 
 // Pages — Common
 import SettingsPage from './pages/common/SettingsPage';
@@ -76,6 +85,7 @@ function App() {
           {/* Public Pages */}
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/explore" element={<PublicCataloguePage />} />
           
           {/* Inscription & Onboarding */}
@@ -161,6 +171,22 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/fournisseur/fichiers"
+            element={
+              <ProtectedRoute allowedRole="fournisseur">
+                <MesFichiersPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/fournisseur/virements"
+            element={
+              <ProtectedRoute allowedRole="fournisseur">
+                <VirementsPage />
+              </ProtectedRoute>
+            }
+          />
           
           {/* Agent - Additional Pages */}
           <Route
@@ -176,6 +202,14 @@ function App() {
             element={
               <ProtectedRoute allowedRole="agent">
                 <SettingsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/agent/imports"
+            element={
+              <ProtectedRoute allowedRole="agent">
+                <AgentImportsPage />
               </ProtectedRoute>
             }
           />
@@ -210,6 +244,46 @@ function App() {
             element={
               <ProtectedRoute allowedRole="admin">
                 <SettingsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/imports"
+            element={
+              <ProtectedRoute allowedRole="admin">
+                <AdminImportsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/audios"
+            element={
+              <ProtectedRoute allowedRole="admin">
+                <AdminAudiosPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/paiements"
+            element={
+              <ProtectedRoute allowedRole="admin">
+                <AdminPaiementsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/credits"
+            element={
+              <ProtectedRoute allowedRole="admin">
+                <AdminCreditsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/gains"
+            element={
+              <ProtectedRoute allowedRole="admin">
+                <AdminGainsPage />
               </ProtectedRoute>
             }
           />

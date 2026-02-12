@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, UserPlus, Shield, Ban, CheckCircle, Eye, Mail, Phone, Building2, Calendar, Download, ChevronLeft, ChevronRight, Edit, Trash2, Users, Activity, TrendingUp, Clock } from 'lucide-react';
+import { Search, UserPlus, Shield, Ban, CheckCircle, Eye, Mail, Phone, Building2, Calendar, Download, ChevronLeft, ChevronRight, Edit, Trash2, Users, Activity, TrendingUp, Clock, Wallet, Plus, Minus } from 'lucide-react';
 import Layout from '../../components/Layout';
 import type { UserRole } from '../../types';
 
@@ -43,6 +43,9 @@ export default function AdminUsersPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedUser, setSelectedUser] = useState<MockUser | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [creditUser, setCreditUser] = useState<MockUser | null>(null);
+  const [creditAmount, setCreditAmount] = useState(0);
+  const [creditAction, setCreditAction] = useState<'add' | 'subtract'>('add');
   const perPage = 10;
 
   const filteredUsers = mockUsers
@@ -252,6 +255,15 @@ export default function AdminUsersPage() {
                           <button className="p-1.5 text-gray-400 hover:text-accent hover:bg-gray-100 rounded-lg transition-colors" title="Modifier">
                             <Edit size={15} />
                           </button>
+                          {user.role === 'acheteur' && (
+                            <button
+                              onClick={() => { setCreditUser(user); setCreditAmount(0); setCreditAction('add'); }}
+                              className="p-1.5 text-gray-400 hover:text-green-500 hover:bg-gray-100 rounded-lg transition-colors"
+                              title="Gérer crédits"
+                            >
+                              <Wallet size={15} />
+                            </button>
+                          )}
                           {user.status === 'active' ? (
                             <button className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-gray-100 rounded-lg transition-colors" title="Suspendre">
                               <Ban size={15} />
@@ -467,6 +479,76 @@ export default function AdminUsersPage() {
                     className="flex-1 px-4 py-2 bg-accent text-white rounded-lg font-medium hover:bg-accent-dark transition-colors text-sm flex items-center justify-center gap-2"
                   >
                     <UserPlus size={16} /> Créer le compte
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Credit Management Modal */}
+        {creditUser && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setCreditUser(null)}>
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm" onClick={e => e.stopPropagation()}>
+              <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+                <h2 className="text-lg font-bold text-gray-900">Gérer les Crédits</h2>
+                <button onClick={() => setCreditUser(null)} className="text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+              </div>
+              <div className="p-6 space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold">
+                    {creditUser.firstName.charAt(0)}{creditUser.lastName.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">{creditUser.firstName} {creditUser.lastName}</p>
+                    <p className="text-sm text-gray-500">{creditUser.company || creditUser.email}</p>
+                  </div>
+                </div>
+                <div className="bg-gray-50 rounded-xl p-4 text-center">
+                  <p className="text-xs text-gray-500">Solde actuel</p>
+                  <p className="text-3xl font-bold text-primary">42 crédits</p>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setCreditAction('add')}
+                    className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${creditAction === 'add' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-600'}`}
+                  >
+                    <Plus size={16} /> Ajouter
+                  </button>
+                  <button
+                    onClick={() => setCreditAction('subtract')}
+                    className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${creditAction === 'subtract' ? 'bg-red-500 text-white' : 'bg-gray-100 text-gray-600'}`}
+                  >
+                    <Minus size={16} /> Retirer
+                  </button>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Nombre de crédits</label>
+                  <input
+                    type="number"
+                    min={0}
+                    value={creditAmount}
+                    onChange={e => setCreditAmount(parseInt(e.target.value) || 0)}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-center text-lg font-bold focus:outline-none focus:ring-2 focus:ring-accent"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Motif (optionnel)</label>
+                  <input type="text" placeholder="Ex: Bonus fidélité, correction erreur..." className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent" />
+                </div>
+                {creditAmount > 0 && (
+                  <div className={`rounded-lg p-3 text-sm ${creditAction === 'add' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                    Nouveau solde : <span className="font-bold">{creditAction === 'add' ? 42 + creditAmount : Math.max(0, 42 - creditAmount)} crédits</span>
+                  </div>
+                )}
+                <div className="flex gap-3 pt-2">
+                  <button onClick={() => setCreditUser(null)} className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">Annuler</button>
+                  <button
+                    onClick={() => setCreditUser(null)}
+                    disabled={creditAmount === 0}
+                    className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors disabled:opacity-40 ${creditAction === 'add' ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'}`}
+                  >
+                    {creditAction === 'add' ? 'Créditer' : 'Débiter'}
                   </button>
                 </div>
               </div>

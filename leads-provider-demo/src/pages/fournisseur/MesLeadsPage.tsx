@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FileSpreadsheet, Upload, CheckCircle, Clock, Eye, Trash2, Download, TrendingUp, DollarSign, X, Phone, Mail, Building2, MapPin, Globe, Calendar, Headphones, Play, Pause, Mic, XCircle } from 'lucide-react';
+import { FileSpreadsheet, Upload, CheckCircle, Clock, Eye, Trash2, Download, TrendingUp, DollarSign, X, Phone, Mail, Building2, MapPin, Globe, Calendar, Headphones, Play, Pause, Mic, XCircle, Plus, Save, User } from 'lucide-react';
 import Layout from '../../components/Layout';
 import { useApi } from '../../hooks/useApi';
 import { getFournisseur, getLeads } from '../../services/api';
@@ -10,6 +10,8 @@ export default function MesLeadsPage() {
   const [selectedLead, setSelectedLead] = useState<(Lead & { uploadDate: string; earnings?: number }) | null>(null);
   const [filterStatus, setFilterStatus] = useState<'all' | 'pending' | 'qualified' | 'rejected' | 'sold'>('all');
   const [isPlaying, setIsPlaying] = useState(false);
+  const [showAddLeadModal, setShowAddLeadModal] = useState(false);
+  const [editLeadData, setEditLeadData] = useState<(Lead & { uploadDate: string; earnings?: number }) | null>(null);
 
   // Fetch data from API
   const { data: mockFournisseur } = useApi(getFournisseur, []);
@@ -86,6 +88,13 @@ export default function MesLeadsPage() {
             <button className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-xl font-medium hover:bg-accent-dark transition-colors">
               <Upload size={18} />
               Nouveau fichier
+            </button>
+            <button
+              onClick={() => { setEditLeadData(null); setShowAddLeadModal(true); }}
+              className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl font-medium hover:bg-primary/90 transition-colors"
+            >
+              <Plus size={18} />
+              Ajouter un lead
             </button>
           </div>
         </div>
@@ -274,6 +283,13 @@ export default function MesLeadsPage() {
                             className="p-2 text-gray-400 hover:text-primary hover:bg-gray-100 rounded-lg transition-colors"
                           >
                             <Eye size={16} />
+                          </button>
+                          <button
+                            onClick={() => { setEditLeadData(lead); setShowAddLeadModal(true); }}
+                            className="p-2 text-gray-400 hover:text-accent hover:bg-gray-100 rounded-lg transition-colors"
+                            title="Modifier"
+                          >
+                            <MapPin size={16} />
                           </button>
                           {lead.status === 'pending' && (
                             <button className="p-2 text-gray-400 hover:text-red-500 hover:bg-gray-100 rounded-lg transition-colors">
@@ -514,6 +530,101 @@ export default function MesLeadsPage() {
             >
               Fermer
             </button>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* Add/Edit Lead Modal */}
+    {showAddLeadModal && (
+      <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setShowAddLeadModal(false)}>
+        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+          <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+            <h2 className="text-lg font-bold text-gray-900">{editLeadData ? 'Modifier le lead' : 'Ajouter un lead'}</h2>
+            <button onClick={() => setShowAddLeadModal(false)} className="text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+          </div>
+          <div className="p-6 space-y-4">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Prénom *</label>
+                <div className="relative">
+                  <User size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input type="text" defaultValue={editLeadData?.firstName || ''} placeholder="Jean" className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Nom *</label>
+                <input type="text" defaultValue={editLeadData?.lastName || ''} placeholder="Dupont" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent" />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+              <div className="relative">
+                <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input type="email" defaultValue={editLeadData?.email || ''} placeholder="jean.dupont@email.com" className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent" />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone *</label>
+              <div className="relative">
+                <Phone size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input type="tel" defaultValue={editLeadData?.phone || ''} placeholder="+33 6 00 00 00 00" className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Entreprise</label>
+                <div className="relative">
+                  <Building2 size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input type="text" defaultValue={editLeadData?.company || ''} placeholder="Nom entreprise" className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Ville</label>
+                <div className="relative">
+                  <MapPin size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input type="text" defaultValue={editLeadData?.city || ''} placeholder="Paris" className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent" />
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Secteur</label>
+                <select defaultValue={editLeadData?.sector || ''} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent">
+                  <option value="">Sélectionner</option>
+                  <option value="Énergie Solaire">Énergie Solaire</option>
+                  <option value="Assurance">Assurance</option>
+                  <option value="Immobilier">Immobilier</option>
+                  <option value="Finance">Finance</option>
+                  <option value="Télécom">Télécom</option>
+                  <option value="Formation">Formation</option>
+                  <option value="Mutuelle">Mutuelle</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Région</label>
+                <select defaultValue={editLeadData?.region || ''} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent">
+                  <option value="">Sélectionner</option>
+                  <option value="Île-de-France">Île-de-France</option>
+                  <option value="Auvergne-Rhône-Alpes">Auvergne-Rhône-Alpes</option>
+                  <option value="PACA">PACA</option>
+                  <option value="Occitanie">Occitanie</option>
+                  <option value="Hauts-de-France">Hauts-de-France</option>
+                  <option value="Nouvelle-Aquitaine">Nouvelle-Aquitaine</option>
+                  <option value="Grand Est">Grand Est</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+              <textarea defaultValue={editLeadData?.notes || ''} placeholder="Notes additionnelles sur le lead..." rows={3} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent resize-none" />
+            </div>
+            <div className="flex gap-3 pt-2">
+              <button onClick={() => setShowAddLeadModal(false)} className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">Annuler</button>
+              <button onClick={() => setShowAddLeadModal(false)} className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-accent text-white rounded-lg text-sm font-medium hover:bg-accent-dark transition-colors">
+                <Save size={16} /> {editLeadData ? 'Enregistrer' : 'Ajouter'}
+              </button>
+            </div>
           </div>
         </div>
       </div>

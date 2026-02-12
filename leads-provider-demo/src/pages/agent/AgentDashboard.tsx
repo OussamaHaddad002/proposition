@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Phone, PhoneCall, PhoneOff, Clock, CheckCircle, XCircle, RotateCcw, Headphones, User, Building2, MapPin } from 'lucide-react';
+import { Phone, PhoneCall, PhoneOff, Clock, CheckCircle, XCircle, RotateCcw, Headphones, User, Building2, MapPin, Edit, Save, Mail } from 'lucide-react';
 import Layout from '../../components/Layout';
 import StatCard from '../../components/StatCard';
 import { useApi } from '../../hooks/useApi';
@@ -16,6 +16,8 @@ export default function AgentDashboard() {
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [searchParams] = useSearchParams();
   const [showTour, setShowTour] = useState(false);
+  const [editingLead, setEditingLead] = useState<Lead | null>(null);
+  const [editForm, setEditForm] = useState({ phone: '', email: '', company: '', city: '' });
 
   useEffect(() => {
     if (searchParams.get('tour') === 'true') {
@@ -180,18 +182,27 @@ export default function AgentDashboard() {
                         }`}>
                           Score: {lead.score}
                         </div>
-                        <button
-                          onClick={() => startCall(lead)}
-                          disabled={callStatus !== 'idle'}
-                          className={`flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-sm font-medium transition-colors ${
-                            callStatus === 'idle'
-                              ? 'bg-green-500 text-white hover:bg-green-600'
-                              : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                          }`}
-                        >
-                          <PhoneCall size={16} />
-                          Appeler
-                        </button>
+                        <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => { setEditingLead(lead); setEditForm({ phone: lead.phone, email: lead.email, company: lead.company, city: lead.city }); }}
+                            className="p-1.5 text-gray-400 hover:text-primary hover:bg-gray-100 rounded-lg transition-colors"
+                            title="Modifier"
+                          >
+                            <Edit size={15} />
+                          </button>
+                          <button
+                            onClick={() => startCall(lead)}
+                            disabled={callStatus !== 'idle'}
+                            className={`flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-sm font-medium transition-colors ${
+                              callStatus === 'idle'
+                                ? 'bg-green-500 text-white hover:bg-green-600'
+                                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                            }`}
+                          >
+                            <PhoneCall size={16} />
+                            Appeler
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -332,6 +343,63 @@ export default function AgentDashboard() {
           </ResponsiveContainer>
         </div>
       </div>
+
+      {/* Edit Lead Modal */}
+      {editingLead && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setEditingLead(null)}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md" onClick={e => e.stopPropagation()}>
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+              <h2 className="text-lg font-bold text-gray-900">Modifier le Lead</h2>
+              <button onClick={() => setEditingLead(null)} className="text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-lg font-bold text-primary">
+                  {editingLead.firstName.charAt(0)}{editingLead.lastName.charAt(0)}
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900">{editingLead.firstName} {editingLead.lastName}</p>
+                  <p className="text-xs text-gray-500">Score: {editingLead.score}</p>
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                <div className="relative">
+                  <Phone size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input type="tel" value={editForm.phone} onChange={e => setEditForm(f => ({...f, phone: e.target.value}))} className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <div className="relative">
+                  <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input type="email" value={editForm.email} onChange={e => setEditForm(f => ({...f, email: e.target.value}))} className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Entreprise</label>
+                <div className="relative">
+                  <Building2 size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input type="text" value={editForm.company} onChange={e => setEditForm(f => ({...f, company: e.target.value}))} className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Ville</label>
+                <div className="relative">
+                  <MapPin size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input type="text" value={editForm.city} onChange={e => setEditForm(f => ({...f, city: e.target.value}))} className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent" />
+                </div>
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button onClick={() => setEditingLead(null)} className="flex-1 px-4 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">Annuler</button>
+                <button onClick={() => setEditingLead(null)} className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-accent text-white rounded-lg text-sm font-medium hover:bg-accent-dark transition-colors">
+                  <Save size={16} /> Enregistrer
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showTour && (
         <TourGuide
