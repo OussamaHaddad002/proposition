@@ -72,7 +72,7 @@ export default function AcheteurDashboard() {
               <span className="text-[#fd7958]/70 ml-1">crédits</span>
             </div>
             <Link 
-              to="/acheteur"
+              to="/explore"
               className="flex items-center gap-2 px-4 py-2 bg-[#fd7958] text-white rounded-lg text-sm font-medium hover:bg-[#e86847] transition-colors"
             >
               <ShoppingCart size={15} />
@@ -212,7 +212,7 @@ export default function AcheteurDashboard() {
                   Leads qualifiés et vérifiés prêts à l'achat
                 </p>
                 <Link 
-                  to="/acheteur"
+                  to="/explore"
                   className="inline-flex items-center gap-1.5 bg-[#fd7958] text-white px-3.5 py-2 rounded-lg text-xs font-medium hover:bg-[#e86847] transition-colors"
                 >
                   Explorer <ArrowRight size={13} />

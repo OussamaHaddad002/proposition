@@ -64,7 +64,7 @@ export default function AcheteurLayout({ children }: AcheteurLayoutProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           {/* Left: Logo + search */}
           <div className="flex items-center gap-4">
-            <Link to="/acheteur" className="flex items-center gap-2 shrink-0">
+            <Link to="/explore" className="flex items-center gap-2 shrink-0">
               <div className="w-7 h-7 bg-[#fd7958] rounded-lg flex items-center justify-center">
                 <span className="text-white text-xs font-bold">LP</span>
               </div>
@@ -247,7 +247,7 @@ export default function AcheteurLayout({ children }: AcheteurLayoutProps) {
         {/* Quick actions */}
         <div className="px-3 mt-2">
           <Link
-            to="/acheteur"
+            to="/explore"
             className="flex items-center gap-3 px-3 py-3 rounded-lg transition-all text-gray-600 hover:bg-gray-50 group"
           >
             <User size={17} className="text-gray-400 group-hover:text-gray-500" />

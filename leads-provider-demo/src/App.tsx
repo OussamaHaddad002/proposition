@@ -14,7 +14,6 @@ import MesLeadsPage from './pages/fournisseur/MesLeadsPage';
 
 // Pages — Acheteur
 import AcheteurDashboard from './pages/acheteur/AcheteurDashboard';
-import CataloguePage from './pages/acheteur/CataloguePage';
 import MesAchatsPage from './pages/acheteur/MesAchatsPage';
 import CreditsPage from './pages/acheteur/CreditsPage';
 import AcheteurSettingsPage from './pages/acheteur/AcheteurSettingsPage';
@@ -103,12 +102,12 @@ function App() {
             }
           />
           
-          {/* Acheteur — Catalogue is the main view */}
+          {/* Acheteur — Catalogue uses the unified PublicCataloguePage */}
           <Route
             path="/acheteur"
             element={
               <ProtectedRoute allowedRole="acheteur">
-                <CataloguePage />
+                <PublicCataloguePage />
               </ProtectedRoute>
             }
           />
