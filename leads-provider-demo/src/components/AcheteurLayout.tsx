@@ -13,7 +13,8 @@ import {
   User,
   TrendingUp,
 } from 'lucide-react';
-import { mockAcheteur } from '../data/mockData';
+import { useApi } from '../hooks/useApi';
+import { getAcheteur } from '../services/api';
 
 interface AcheteurLayoutProps {
   children: React.ReactNode;
@@ -33,7 +34,9 @@ export default function AcheteurLayout({ children }: AcheteurLayoutProps) {
   const navigate = useNavigate();
   const notifRef = useRef<HTMLDivElement>(null);
 
-  const userName = `${mockAcheteur.firstName} ${mockAcheteur.lastName}`;
+  // Fetch acheteur data from API
+  const { data: mockAcheteur } = useApi(getAcheteur, []);
+  const userName = mockAcheteur ? `${mockAcheteur.firstName} ${mockAcheteur.lastName}` : 'Chargement...';
 
   const notifications = [
     { id: 1, title: 'Nouveau lead qualifié', time: 'Il y a 5 min', unread: true },
@@ -87,13 +90,13 @@ export default function AcheteurLayout({ children }: AcheteurLayoutProps) {
           <div className="hidden lg:flex items-center gap-5">
             <div className="flex items-center gap-1.5 text-xs">
               <CreditCard size={14} className="text-[#fd7958]" />
-              <span className="font-semibold text-[#fd7958]">{mockAcheteur.credits}</span>
+              <span className="font-semibold text-[#fd7958]">{mockAcheteur?.credits ?? 0}</span>
               <span className="text-gray-400">crédits</span>
             </div>
             <div className="w-px h-4 bg-gray-100" />
             <div className="flex items-center gap-1.5 text-xs">
               <TrendingUp size={14} className="text-emerald-500" />
-              <span className="font-semibold text-gray-700">{mockAcheteur.conversionRate}%</span>
+              <span className="font-semibold text-gray-700">{mockAcheteur?.conversionRate ?? 0}%</span>
               <span className="text-gray-400">conversion</span>
             </div>
           </div>
@@ -140,7 +143,7 @@ export default function AcheteurLayout({ children }: AcheteurLayoutProps) {
                 {userName.charAt(0).toUpperCase()}
               </div>
               <span className="hidden sm:inline text-sm font-medium text-gray-600 max-w-24 truncate">
-                {mockAcheteur.firstName}
+                {mockAcheteur?.firstName ?? ''}
               </span>
             </button>
           </div>
@@ -180,11 +183,11 @@ export default function AcheteurLayout({ children }: AcheteurLayoutProps) {
           {/* User Info */}
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-[#344a5e] rounded-full flex items-center justify-center text-white text-base font-semibold">
-              {mockAcheteur.firstName.charAt(0)}{mockAcheteur.lastName.charAt(0)}
+              {mockAcheteur?.firstName?.charAt(0)}{mockAcheteur?.lastName?.charAt(0)}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-gray-800">{userName}</p>
-              <p className="text-xs text-gray-400">{mockAcheteur.email}</p>
+              <p className="text-xs text-gray-400">{mockAcheteur?.email ?? ''}</p>
               <div className="flex items-center gap-2 mt-1">
                 <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#fd7958]/[0.08] text-[#fd7958]">
                   Acheteur
@@ -198,15 +201,15 @@ export default function AcheteurLayout({ children }: AcheteurLayoutProps) {
           {/* Quick Stats in sidebar */}
           <div className="grid grid-cols-3 gap-2 mt-4">
             <div className="text-center p-2.5 bg-gray-50 rounded-lg">
-              <p className="text-base font-bold text-[#fd7958]">{mockAcheteur.credits}</p>
+              <p className="text-base font-bold text-[#fd7958]">{mockAcheteur?.credits ?? 0}</p>
               <p className="text-[10px] text-gray-400">Crédits</p>
             </div>
             <div className="text-center p-2.5 bg-gray-50 rounded-lg">
-              <p className="text-base font-bold text-gray-800">{mockAcheteur.totalLeadsPurchased}</p>
+              <p className="text-base font-bold text-gray-800">{mockAcheteur?.totalLeadsPurchased ?? 0}</p>
               <p className="text-[10px] text-gray-400">Achats</p>
             </div>
             <div className="text-center p-2.5 bg-gray-50 rounded-lg">
-              <p className="text-base font-bold text-emerald-600">{mockAcheteur.conversionRate}%</p>
+              <p className="text-base font-bold text-emerald-600">{mockAcheteur?.conversionRate ?? 0}%</p>
               <p className="text-[10px] text-gray-400">Conversion</p>
             </div>
           </div>

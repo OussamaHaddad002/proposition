@@ -1,0 +1,19 @@
+{
+  "creditPacks": [
+    { "id": "pack-1", "name": "Starter", "credits": 50, "price": 149 },
+    { "id": "pack-2", "name": "Business", "credits": 150, "price": 399, "popular": true },
+    { "id": "pack-3", "name": "Enterprise", "credits": 500, "price": 999 },
+    { "id": "pack-4", "name": "Unlimited", "credits": 1500, "price": 2499 }
+  ],
+  "payments": [
+    { "id": "pay-1", "amount": 399, "status": "completed", "date": "2026-02-01", "type": "credit_purchase", "description": "Pack Business - 150 crédits" },
+    { "id": "pay-2", "amount": 149, "status": "completed", "date": "2026-01-15", "type": "credit_purchase", "description": "Pack Starter - 50 crédits" },
+    { "id": "pay-3", "amount": 1250, "status": "pending", "date": "2026-02-05", "type": "lead_payment", "description": "Paiement leads février" }
+  ],
+  "notifications": [
+    { "id": "notif-1", "type": "success", "title": "Lead qualifié", "message": "Le lead Jean Dupont a été qualifié avec succès.", "read": false, "createdAt": "2026-02-06T09:30:00Z" },
+    { "id": "notif-2", "type": "info", "title": "Nouveau lead disponible", "message": "15 nouveaux leads correspondent à vos critères.", "read": false, "createdAt": "2026-02-06T08:00:00Z" },
+    { "id": "notif-3", "type": "warning", "title": "Crédits faibles", "message": "Il vous reste 45 crédits. Pensez à recharger.", "read": true, "createdAt": "2026-02-05T14:00:00Z" },
+    { "id": "notif-4", "type": "success", "title": "Paiement reçu", "message": "Votre paiement de 1 250€ a été traité.", "read": true, "createdAt": "2026-02-04T10:00:00Z" }
+  ]
+}

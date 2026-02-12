@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Package, CheckCircle, XCircle, Clock, Eye, Download, Phone, Mail, Building2, TrendingUp } from 'lucide-react';
 import AcheteurLayout from '../../components/AcheteurLayout';
-import { mockLeads } from '../../data/mockData';
+import { useApi } from '../../hooks/useApi';
+import { getLeads } from '../../services/api';
 import type { Lead } from '../../types';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import TourGuide from '../../components/TourGuide';
@@ -19,6 +20,10 @@ export default function MesAchatsPage() {
       setShowTour(true);
     }
   }, [searchParams]);
+
+  // Fetch leads from API
+  const { data: leadsData } = useApi(getLeads, []);
+  const mockLeads = leadsData ?? [];
 
   const purchasedLeads = mockLeads.slice(0, 25).map((lead, index) => ({
     ...lead,

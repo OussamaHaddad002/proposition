@@ -3,7 +3,8 @@ import { useSearchParams } from 'react-router-dom';
 import { Phone, PhoneCall, PhoneOff, Clock, CheckCircle, XCircle, RotateCcw, Headphones, User, Building2, MapPin } from 'lucide-react';
 import Layout from '../../components/Layout';
 import StatCard from '../../components/StatCard';
-import { mockAgent, mockLeads } from '../../data/mockData';
+import { useApi } from '../../hooks/useApi';
+import { getAgent, getLeads } from '../../services/api';
 import type { Lead } from '../../types';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import TourGuide from '../../components/TourGuide';
@@ -21,6 +22,11 @@ export default function AgentDashboard() {
       setShowTour(true);
     }
   }, [searchParams]);
+
+  // Fetch data from API
+  const { data: mockAgent } = useApi(getAgent, []);
+  const { data: leadsData } = useApi(getLeads, []);
+  const mockLeads = leadsData ?? [];
 
   // Leads à qualifier
   const leadsToQualify = mockLeads.filter(l => l.qualificationStatus === 'pending' || l.qualificationStatus === 'callback').slice(0, 15);
@@ -61,7 +67,11 @@ export default function AgentDashboard() {
   };
 
   return (
-    <Layout userRole="agent" userName={`${mockAgent.firstName} ${mockAgent.lastName}`}>
+    <Layout userRole="agent" userName={mockAgent ? `${mockAgent.firstName} ${mockAgent.lastName}` : 'Chargement...'}>
+      {!mockAgent ? (
+        <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#fd7958]" /></div>
+      ) : (
+      <>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -330,6 +340,8 @@ export default function AgentDashboard() {
           onComplete={() => setShowTour(false)}
           onSkip={() => setShowTour(false)}
         />
+      )}
+      </>
       )}
     </Layout>
   );

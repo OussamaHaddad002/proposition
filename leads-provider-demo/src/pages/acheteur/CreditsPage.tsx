@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { CreditCard, Plus, History, TrendingUp, Gift, Zap, Star, Check, Download, ChevronRight, Wallet } from 'lucide-react';
 import AcheteurLayout from '../../components/AcheteurLayout';
-import { mockAcheteur, creditPacks } from '../../data/mockData';
+import { useApi } from '../../hooks/useApi';
+import { getAcheteur, getCreditPacks } from '../../services/api';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import TourGuide from '../../components/TourGuide';
 import { creditsTourSteps } from '../../data/tourSteps';
@@ -17,6 +18,11 @@ export default function CreditsPage() {
       setShowTour(true);
     }
   }, [searchParams]);
+
+  // Fetch data from API
+  const { data: mockAcheteur } = useApi(getAcheteur, []);
+  const { data: packsData } = useApi(getCreditPacks, []);
+  const creditPacks = packsData ?? [];
 
   const creditHistory = [
     { id: '1', type: 'purchase', amount: 50, date: '2024-01-15', description: 'Achat pack Pro', balance: 250 },
@@ -61,6 +67,10 @@ export default function CreditsPage() {
 
   return (
     <AcheteurLayout>
+      {!mockAcheteur ? (
+        <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#fd7958]" /></div>
+      ) : (
+      <>
       <div className="space-y-5">
         {/* Header */}
         <div>
@@ -274,6 +284,8 @@ export default function CreditsPage() {
           onComplete={() => setShowTour(false)}
           onSkip={() => setShowTour(false)}
         />
+      )}
+      </>
       )}
     </AcheteurLayout>
   );

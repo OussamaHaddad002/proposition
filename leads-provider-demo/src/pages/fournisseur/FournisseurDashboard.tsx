@@ -3,7 +3,8 @@ import { useSearchParams } from 'react-router-dom';
 import { Upload, Users, Euro, FileSpreadsheet, CheckCircle, XCircle, Clock, Download } from 'lucide-react';
 import Layout from '../../components/Layout';
 import StatCard from '../../components/StatCard';
-import { mockFournisseur, monthlyStats } from '../../data/mockData';
+import { useApi } from '../../hooks/useApi';
+import { getFournisseur, getMonthlyStats } from '../../services/api';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import TourGuide from '../../components/TourGuide';
 import { dashboardTourSteps } from '../../data/tourSteps';
@@ -19,6 +20,11 @@ export default function FournisseurDashboard() {
     }
   }, [searchParams]);
 
+  // Fetch data from API
+  const { data: mockFournisseur } = useApi(getFournisseur, []);
+  const { data: monthlyStatsData } = useApi(getMonthlyStats, []);
+  const monthlyStats = monthlyStatsData ?? [];
+
   const statusData = [
     { name: 'Qualifiés', value: 45, color: '#10b981' },
     { name: 'En attente', value: 25, color: '#f59e0b' },
@@ -33,7 +39,11 @@ export default function FournisseurDashboard() {
   ];
 
   return (
-    <Layout userRole="fournisseur" userName={`${mockFournisseur.firstName} ${mockFournisseur.lastName}`}>
+    <Layout userRole="fournisseur" userName={mockFournisseur ? `${mockFournisseur.firstName} ${mockFournisseur.lastName}` : 'Chargement...'}>
+      {!mockFournisseur ? (
+        <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#fd7958]" /></div>
+      ) : (
+      <>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -245,6 +255,8 @@ export default function FournisseurDashboard() {
           onComplete={() => setShowTour(false)}
           onSkip={() => setShowTour(false)}
         />
+      )}
+      </>
       )}
     </Layout>
   );

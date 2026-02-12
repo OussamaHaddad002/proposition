@@ -5,7 +5,8 @@ import AcheteurLayout from '../../components/AcheteurLayout';
 import LeadCard from '../../components/LeadCard';
 import LeadDetailModal from '../../components/LeadDetailModal';
 import TourGuide from '../../components/TourGuide';
-import { mockLeads, sectorDistribution } from '../../data/mockData';
+import { useApi } from '../../hooks/useApi';
+import { getLeads, getSectorDistribution } from '../../services/api';
 import { catalogueTourSteps } from '../../data/tourSteps';
 import type { Lead } from '../../types';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
@@ -19,6 +20,12 @@ export default function CataloguePage() {
   const [selectedRegion, setSelectedRegion] = useState('all');
   const [minScore, setMinScore] = useState(60);
   const [cart, setCart] = useState<Lead[]>([]);
+
+  // Fetch data from API
+  const { data: leadsData } = useApi(getLeads, []);
+  const mockLeads = leadsData ?? [];
+  const { data: sectorData } = useApi(getSectorDistribution, []);
+  const sectorDistribution = sectorData ?? [];
 
   const availableLeads = mockLeads.filter(l => l.status === 'qualified' && l.score >= minScore);
   

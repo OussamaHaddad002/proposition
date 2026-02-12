@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { ShoppingCart, TrendingUp, CreditCard, ArrowRight, Target, Clock, CheckCircle2, AlertCircle, Sparkles } from 'lucide-react';
 import AcheteurLayout from '../../components/AcheteurLayout';
-import { mockAcheteur, mockLeads, sectorDistribution } from '../../data/mockData';
+import { useApi } from '../../hooks/useApi';
+import { getAcheteur, getLeads, getSectorDistribution } from '../../services/api';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import TourGuide from '../../components/TourGuide';
 import { dashboardTourSteps } from '../../data/tourSteps';
@@ -16,6 +17,13 @@ export default function AcheteurDashboard() {
       setShowTour(true);
     }
   }, [searchParams]);
+
+  // Fetch data from API
+  const { data: mockAcheteur } = useApi(getAcheteur, []);
+  const { data: leadsData } = useApi(getLeads, []);
+  const mockLeads = leadsData ?? [];
+  const { data: sectorData } = useApi(getSectorDistribution, []);
+  const sectorDistribution = sectorData ?? [];
 
   const availableLeads = mockLeads.filter(l => l.status === 'qualified').length;
   
@@ -50,14 +58,18 @@ export default function AcheteurDashboard() {
   };
 
   const stats = [
-    { label: 'Crédits', value: mockAcheteur.credits, suffix: '', icon: <CreditCard size={18} />, color: 'text-[#fd7958]', bg: 'bg-[#fd7958]/[0.07]' },
-    { label: 'Leads achetés', value: mockAcheteur.totalLeadsPurchased, suffix: '', change: '+12%', icon: <ShoppingCart size={18} />, color: 'text-[#344a5e]', bg: 'bg-[#344a5e]/[0.06]' },
-    { label: 'Conversion', value: mockAcheteur.conversionRate, suffix: '%', change: '+5%', icon: <TrendingUp size={18} />, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Crédits', value: mockAcheteur?.credits ?? 0, suffix: '', icon: <CreditCard size={18} />, color: 'text-[#fd7958]', bg: 'bg-[#fd7958]/[0.07]' },
+    { label: 'Leads achetés', value: mockAcheteur?.totalLeadsPurchased ?? 0, suffix: '', change: '+12%', icon: <ShoppingCart size={18} />, color: 'text-[#344a5e]', bg: 'bg-[#344a5e]/[0.06]' },
+    { label: 'Conversion', value: mockAcheteur?.conversionRate ?? 0, suffix: '%', change: '+5%', icon: <TrendingUp size={18} />, color: 'text-emerald-600', bg: 'bg-emerald-50' },
     { label: 'Disponibles', value: availableLeads, suffix: '', icon: <Target size={18} />, color: 'text-violet-600', bg: 'bg-violet-50' },
   ];
 
   return (
     <AcheteurLayout>
+      {!mockAcheteur ? (
+        <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#fd7958]" /></div>
+      ) : (
+      <>
       <div className="space-y-6">
 
         {/* Header — clean, flat */}
@@ -258,6 +270,8 @@ export default function AcheteurDashboard() {
           onComplete={() => setShowTour(false)}
           onSkip={() => setShowTour(false)}
         />
+      )}
+      </>
       )}
     </AcheteurLayout>
   );

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { FileSpreadsheet, Upload, CheckCircle, Clock, Eye, Trash2, Download, TrendingUp, DollarSign, X, Phone, Mail, Building2, MapPin, Globe, Calendar, Headphones, Play, Pause, Mic, XCircle } from 'lucide-react';
 import Layout from '../../components/Layout';
-import { mockFournisseur, mockLeads } from '../../data/mockData';
+import { useApi } from '../../hooks/useApi';
+import { getFournisseur, getLeads } from '../../services/api';
 import type { Lead } from '../../types';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
@@ -9,6 +10,11 @@ export default function MesLeadsPage() {
   const [selectedLead, setSelectedLead] = useState<(Lead & { uploadDate: string; earnings?: number }) | null>(null);
   const [filterStatus, setFilterStatus] = useState<'all' | 'pending' | 'qualified' | 'rejected' | 'sold'>('all');
   const [isPlaying, setIsPlaying] = useState(false);
+
+  // Fetch data from API
+  const { data: mockFournisseur } = useApi(getFournisseur, []);
+  const { data: leadsData } = useApi(getLeads, []);
+  const mockLeads = leadsData ?? [];
 
   // Mes leads avec statuts variés
   const myLeads = mockLeads.slice(0, 35).map((lead, _index) => ({
@@ -61,12 +67,15 @@ export default function MesLeadsPage() {
 
   return (
     <>
-    <Layout userRole="fournisseur" userName={`${mockFournisseur.firstName} ${mockFournisseur.lastName}`}>
+    <Layout userRole="fournisseur" userName={mockFournisseur ? `${mockFournisseur.firstName} ${mockFournisseur.lastName}` : 'Chargement...'}>
+      {!mockFournisseur ? (
+        <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#fd7958]" /></div>
+      ) : (
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Mes Leads 📋</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Mes Leads qualifié</h1>
             <p className="text-sm sm:text-base text-gray-500">Gérez et suivez tous vos leads soumis</p>
           </div>
           <div className="flex gap-3">
@@ -281,6 +290,7 @@ export default function MesLeadsPage() {
           </div>
         </div>
       </div>
+      )}
     </Layout>
 
     {/* Lead Detail Modal */}

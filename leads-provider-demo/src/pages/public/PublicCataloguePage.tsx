@@ -16,7 +16,8 @@ import { useAuth } from '../../App';
 import FranceLeadMap from '../../components/FranceLeadMap';
 import LeadCard from '../../components/LeadCard';
 import LeadDetailModal from '../../components/LeadDetailModal';
-import { mockLeads } from '../../data/mockData';
+import { useApi } from '../../hooks/useApi';
+import { getLeads } from '../../services/api';
 import type { Lead } from '../../types';
 import {
   ResponsiveContainer, Tooltip,
@@ -37,6 +38,10 @@ export default function PublicCataloguePage() {
   const [locationTerm] = useState(initialLocation);
   const { role } = useAuth();
   const isConnected = !!role;
+
+  // Fetch leads from API
+  const { data: leadsData } = useApi(getLeads, []);
+  const mockLeads = leadsData ?? [];
 
   const availableLeads = mockLeads.filter(l => l.status === 'qualified' && l.score >= minScore);
 

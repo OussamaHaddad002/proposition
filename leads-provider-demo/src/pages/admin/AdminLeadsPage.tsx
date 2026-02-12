@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Search, Download, Eye, Trash2, CheckCircle, XCircle, Clock, Play, ArrowUpDown, ChevronLeft, ChevronRight, Building2, MapPin } from 'lucide-react';
 import Layout from '../../components/Layout';
-import { mockLeads, sectorDistribution } from '../../data/mockData';
+import { useApi } from '../../hooks/useApi';
+import { getLeads, getSectorDistribution } from '../../services/api';
 import type { Lead } from '../../types';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
@@ -15,6 +16,12 @@ export default function AdminLeadsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const perPage = 15;
+
+  // Fetch data from API
+  const { data: leadsData } = useApi(getLeads, []);
+  const mockLeads = leadsData ?? [];
+  const { data: sectorData } = useApi(getSectorDistribution, []);
+  const sectorDistribution = sectorData ?? [];
 
   const allLeads = mockLeads;
 

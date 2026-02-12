@@ -1,6 +1,7 @@
 import { X, Phone, Mail, Building2, MapPin, Calendar, Globe, Headphones, Star, TrendingUp, TrendingDown } from 'lucide-react';
 import type { Lead } from '../types';
-import { generateScoreExplanation } from '../data/mockData';
+import { useApi } from '../hooks/useApi';
+import { getScoreExplanations } from '../services/api';
 
 interface LeadDetailModalProps {
   lead: Lead;
@@ -25,7 +26,8 @@ export default function LeadDetailModal({
   showFullDetails = false 
 }: LeadDetailModalProps) {
   const scoreInfo = getScoreColor(lead.score);
-  const scoreExplanations = generateScoreExplanation(lead.score);
+  const { data: scoreExplData } = useApi(getScoreExplanations, []);
+  const scoreExplanations = scoreExplData ?? [];
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">

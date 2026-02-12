@@ -144,7 +144,7 @@ export const mesAchatsTourSteps: TourStep[] = [
   },
   {
     target: '[data-tour="purchases-table"]',
-    title: 'Tableau détaillé 📋',
+    title: 'Tableau détaillé qualifié',
     content: 'Tous vos achats avec possibilité de marquer le statut de conversion. Filtrez par statut pour une vue ciblée.',
     placement: 'top',
   },

@@ -1,12 +1,18 @@
 import { useState } from 'react';
 import { Phone, PhoneMissed, Clock, CheckCircle, XCircle, RotateCcw, Play, Download, User, Building2 } from 'lucide-react';
 import Layout from '../../components/Layout';
-import { mockAgent, mockLeads } from '../../data/mockData';
+import { useApi } from '../../hooks/useApi';
+import { getAgent, getLeads } from '../../services/api';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 
 export default function HistoriqueAppelsPage() {
   const [filterStatus, setFilterStatus] = useState<'all' | 'qualified' | 'not_qualified' | 'callback'>('all');
   const [dateRange, setDateRange] = useState('7d');
+
+  // Fetch data from API
+  const { data: mockAgent } = useApi(getAgent, []);
+  const { data: leadsData } = useApi(getLeads, []);
+  const mockLeads = leadsData ?? [];
 
   // Historique des appels simulé
   const callHistory = mockLeads.slice(0, 50).map((lead, index) => ({
@@ -71,7 +77,10 @@ export default function HistoriqueAppelsPage() {
   const avgDuration = Math.round(callHistory.reduce((sum, c) => sum + c.duration, 0) / callHistory.length);
 
   return (
-    <Layout userRole="agent" userName={`${mockAgent.firstName} ${mockAgent.lastName}`}>
+    <Layout userRole="agent" userName={mockAgent ? `${mockAgent.firstName} ${mockAgent.lastName}` : 'Chargement...'}>
+      {!mockAgent ? (
+        <div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#fd7958]" /></div>
+      ) : (
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -270,6 +279,7 @@ export default function HistoriqueAppelsPage() {
           </div>
         </div>
       </div>
+      )}
     </Layout>
   );
 }

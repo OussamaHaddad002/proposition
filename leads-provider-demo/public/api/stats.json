@@ -1,0 +1,44 @@
+{
+  "globalStats": {
+    "totalLeads": 15420,
+    "qualifiedLeads": 8750,
+    "soldLeads": 6230,
+    "pendingLeads": 2890,
+    "revenue": 187500,
+    "avgScore": 78.5,
+    "conversionRate": 40.4
+  },
+  "monthlyStats": [
+    { "month": "Sep", "leads": 820, "qualified": 540, "sold": 380, "revenue": 11400 },
+    { "month": "Oct", "leads": 980, "qualified": 680, "sold": 520, "revenue": 15600 },
+    { "month": "Nov", "leads": 1150, "qualified": 790, "sold": 610, "revenue": 18300 },
+    { "month": "Déc", "leads": 890, "qualified": 580, "sold": 420, "revenue": 12600 },
+    { "month": "Jan", "leads": 1320, "qualified": 920, "sold": 750, "revenue": 22500 },
+    { "month": "Fév", "leads": 680, "qualified": 480, "sold": 350, "revenue": 10500 }
+  ],
+  "sectorDistribution": [
+    { "name": "Technologie", "value": 28, "color": "#fd7958" },
+    { "name": "Finance", "value": 22, "color": "#344a5e" },
+    { "name": "Immobilier", "value": 18, "color": "#10b981" },
+    { "name": "Santé", "value": 12, "color": "#3b82f6" },
+    { "name": "Services", "value": 10, "color": "#f59e0b" },
+    { "name": "Autres", "value": 10, "color": "#94a3b8" }
+  ],
+  "regionDistribution": [
+    { "name": "Île-de-France", "value": 35 },
+    { "name": "Auvergne-Rhône-Alpes", "value": 18 },
+    { "name": "PACA", "value": 12 },
+    { "name": "Nouvelle-Aquitaine", "value": 10 },
+    { "name": "Occitanie", "value": 8 },
+    { "name": "Autres", "value": 17 }
+  ],
+  "scoreExplanations": [
+    { "feature": "Secteur d'activité", "contribution": 18, "description": "Secteur à forte demande" },
+    { "feature": "Région", "contribution": 14, "description": "Zone géographique active" },
+    { "feature": "Fraîcheur du lead", "contribution": 11, "description": "Lead récent (< 7 jours)" },
+    { "feature": "Email validé", "contribution": 9, "description": "Adresse email vérifiée (MX valide)" },
+    { "feature": "Téléphone validé", "contribution": 6, "description": "Numéro vérifié HLR" },
+    { "feature": "Canal d'acquisition", "contribution": 3, "description": "Source moyenne" },
+    { "feature": "Historique similaires", "contribution": 2, "description": "Leads similaires performants" }
+  ]
+}
