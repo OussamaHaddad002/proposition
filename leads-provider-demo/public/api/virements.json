@@ -1,0 +1,20 @@
+{
+  "virements": [
+    { "id": "VIR-001", "reference": "VP-2026-02-001", "amount": 2450.00, "date": "2026-02-10", "status": "pending", "leadsCount": 35, "period": "Fév 2026 (1ère quinzaine)", "iban": "FR76 •••• •••• •••• 4521" },
+    { "id": "VIR-002", "reference": "VP-2026-01-002", "amount": 3820.50, "date": "2026-01-31", "status": "completed", "leadsCount": 52, "period": "Jan 2026 (2ème quinzaine)", "iban": "FR76 •••• •••• •••• 4521" },
+    { "id": "VIR-003", "reference": "VP-2026-01-001", "amount": 2915.00, "date": "2026-01-15", "status": "completed", "leadsCount": 41, "period": "Jan 2026 (1ère quinzaine)", "iban": "FR76 •••• •••• •••• 4521" },
+    { "id": "VIR-004", "reference": "VP-2025-12-002", "amount": 4100.75, "date": "2025-12-31", "status": "completed", "leadsCount": 58, "period": "Déc 2025 (2ème quinzaine)", "iban": "FR76 •••• •••• •••• 4521" },
+    { "id": "VIR-005", "reference": "VP-2025-12-001", "amount": 3250.00, "date": "2025-12-15", "status": "completed", "leadsCount": 45, "period": "Déc 2025 (1ère quinzaine)", "iban": "FR76 •••• •••• •••• 4521" },
+    { "id": "VIR-006", "reference": "VP-2025-11-002", "amount": 2680.25, "date": "2025-11-30", "status": "completed", "leadsCount": 38, "period": "Nov 2025 (2ème quinzaine)", "iban": "FR76 •••• •••• •••• 4521" },
+    { "id": "VIR-007", "reference": "VP-2025-11-001", "amount": 1950.00, "date": "2025-11-15", "status": "completed", "leadsCount": 28, "period": "Nov 2025 (1ère quinzaine)", "iban": "FR76 •••• •••• •••• 4521" },
+    { "id": "VIR-008", "reference": "VP-2025-10-002", "amount": 520.00, "date": "2025-10-31", "status": "failed", "leadsCount": 8, "period": "Oct 2025 (2ème quinzaine)", "iban": "FR76 •••• •••• •••• 4521" }
+  ],
+  "monthlyAmounts": [
+    { "month": "Sep", "amount": 3200 },
+    { "month": "Oct", "amount": 2850 },
+    { "month": "Nov", "amount": 4630 },
+    { "month": "Déc", "amount": 7350 },
+    { "month": "Jan", "amount": 6735 },
+    { "month": "Fév", "amount": 2450 }
+  ]
+}

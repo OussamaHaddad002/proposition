@@ -2,30 +2,9 @@ import { useState } from 'react';
 import { Download, CheckCircle, Clock, XCircle, Eye, ChevronLeft, ChevronRight, TrendingUp, Wallet, ArrowDownRight, FileText } from 'lucide-react';
 import Layout from '../../components/Layout';
 import { useApi } from '../../hooks/useApi';
-import { getFournisseur } from '../../services/api';
+import { getFournisseur, getVirements, getMonthlyVirements } from '../../services/api';
+import type { Virement } from '../../types';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-
-interface Virement {
-  id: string;
-  reference: string;
-  amount: number;
-  date: string;
-  status: 'completed' | 'pending' | 'failed';
-  leadsCount: number;
-  period: string;
-  iban: string;
-}
-
-const mockVirements: Virement[] = [
-  { id: 'VIR-001', reference: 'VP-2026-02-001', amount: 2450.00, date: '2026-02-10', status: 'pending', leadsCount: 35, period: 'Fév 2026 (1ère quinzaine)', iban: 'FR76 •••• •••• •••• 4521' },
-  { id: 'VIR-002', reference: 'VP-2026-01-002', amount: 3820.50, date: '2026-01-31', status: 'completed', leadsCount: 52, period: 'Jan 2026 (2ème quinzaine)', iban: 'FR76 •••• •••• •••• 4521' },
-  { id: 'VIR-003', reference: 'VP-2026-01-001', amount: 2915.00, date: '2026-01-15', status: 'completed', leadsCount: 41, period: 'Jan 2026 (1ère quinzaine)', iban: 'FR76 •••• •••• •••• 4521' },
-  { id: 'VIR-004', reference: 'VP-2025-12-002', amount: 4100.75, date: '2025-12-31', status: 'completed', leadsCount: 58, period: 'Déc 2025 (2ème quinzaine)', iban: 'FR76 •••• •••• •••• 4521' },
-  { id: 'VIR-005', reference: 'VP-2025-12-001', amount: 3250.00, date: '2025-12-15', status: 'completed', leadsCount: 45, period: 'Déc 2025 (1ère quinzaine)', iban: 'FR76 •••• •••• •••• 4521' },
-  { id: 'VIR-006', reference: 'VP-2025-11-002', amount: 2680.25, date: '2025-11-30', status: 'completed', leadsCount: 38, period: 'Nov 2025 (2ème quinzaine)', iban: 'FR76 •••• •••• •••• 4521' },
-  { id: 'VIR-007', reference: 'VP-2025-11-001', amount: 1950.00, date: '2025-11-15', status: 'completed', leadsCount: 28, period: 'Nov 2025 (1ère quinzaine)', iban: 'FR76 •••• •••• •••• 4521' },
-  { id: 'VIR-008', reference: 'VP-2025-10-002', amount: 520.00, date: '2025-10-31', status: 'failed', leadsCount: 8, period: 'Oct 2025 (2ème quinzaine)', iban: 'FR76 •••• •••• •••• 4521' },
-];
 
 export default function VirementsPage() {
   const [filterStatus, setFilterStatus] = useState<'all' | Virement['status']>('all');
@@ -34,22 +13,17 @@ export default function VirementsPage() {
   const perPage = 6;
 
   const { data: mockFournisseur } = useApi(getFournisseur, []);
+  const { data: virementsData } = useApi(getVirements, []);
+  const { data: monthlyAmountsData } = useApi(getMonthlyVirements, []);
+  const allVirements = virementsData ?? [];
+  const monthlyData = monthlyAmountsData ?? [];
 
-  const filtered = mockVirements.filter(v => filterStatus === 'all' || v.status === filterStatus);
+  const filtered = allVirements.filter(v => filterStatus === 'all' || v.status === filterStatus);
   const totalPages = Math.ceil(filtered.length / perPage);
   const paginated = filtered.slice((currentPage - 1) * perPage, currentPage * perPage);
 
-  const totalReceived = mockVirements.filter(v => v.status === 'completed').reduce((s, v) => s + v.amount, 0);
-  const totalPending = mockVirements.filter(v => v.status === 'pending').reduce((s, v) => s + v.amount, 0);
-
-  const monthlyData = [
-    { month: 'Sep', amount: 3200 },
-    { month: 'Oct', amount: 2850 },
-    { month: 'Nov', amount: 4630 },
-    { month: 'Déc', amount: 7350 },
-    { month: 'Jan', amount: 6735 },
-    { month: 'Fév', amount: 2450 },
-  ];
+  const totalReceived = allVirements.filter(v => v.status === 'completed').reduce((s, v) => s + v.amount, 0);
+  const totalPending = allVirements.filter(v => v.status === 'pending').reduce((s, v) => s + v.amount, 0);
 
   const getStatusBadge = (status: Virement['status']) => {
     const styles = {
@@ -98,7 +72,7 @@ export default function VirementsPage() {
               <TrendingUp size={20} />
               <span className="text-sm font-medium">Virements</span>
             </div>
-            <p className="text-2xl font-bold text-gray-900">{mockVirements.filter(v => v.status === 'completed').length}</p>
+            <p className="text-2xl font-bold text-gray-900">{allVirements.filter(v => v.status === 'completed').length}</p>
             <p className="text-xs text-gray-400">virements effectués</p>
           </div>
           <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
@@ -107,8 +81,8 @@ export default function VirementsPage() {
               <span className="text-sm font-medium">Moy / virement</span>
             </div>
             <p className="text-2xl font-bold text-gray-900">
-              {mockVirements.filter(v => v.status === 'completed').length > 0
-                ? (totalReceived / mockVirements.filter(v => v.status === 'completed').length).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
+              {allVirements.filter(v => v.status === 'completed').length > 0
+                ? (totalReceived / allVirements.filter(v => v.status === 'completed').length).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })
                 : '0 €'}
             </p>
           </div>

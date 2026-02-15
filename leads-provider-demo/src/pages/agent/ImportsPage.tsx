@@ -2,43 +2,21 @@ import { useState } from 'react';
 import { FileSpreadsheet, Search, Eye, Clock, CheckCircle, XCircle, AlertTriangle, Download, ChevronLeft, ChevronRight, Calendar, User } from 'lucide-react';
 import Layout from '../../components/Layout';
 import { useApi } from '../../hooks/useApi';
-import { getAgent } from '../../services/api';
-
-interface Import {
-  id: string;
-  fileName: string;
-  fournisseur: string;
-  company: string;
-  uploadDate: string;
-  totalLeads: number;
-  pending: number;
-  qualified: number;
-  rejected: number;
-  duplicates: number;
-  status: 'en_cours' | 'termine' | 'en_attente';
-}
-
-const mockImports: Import[] = [
-  { id: 'IMP-001', fileName: 'leads_solaire_jan2026.csv', fournisseur: 'Sophie Martin', company: 'Agence Ads Paris', uploadDate: '2026-02-10', totalLeads: 250, pending: 45, qualified: 180, rejected: 15, duplicates: 10, status: 'en_cours' },
-  { id: 'IMP-002', fileName: 'prospects_assurance.xlsx', fournisseur: 'Thomas Moreau', company: 'Solar France', uploadDate: '2026-02-09', totalLeads: 180, pending: 0, qualified: 150, rejected: 22, duplicates: 8, status: 'termine' },
-  { id: 'IMP-003', fileName: 'leads_immobilier_fev.csv', fournisseur: 'Emma Garcia', company: 'Digital Agency', uploadDate: '2026-02-08', totalLeads: 320, pending: 320, qualified: 0, rejected: 0, duplicates: 0, status: 'en_attente' },
-  { id: 'IMP-004', fileName: 'data_credit_2026.csv', fournisseur: 'Hugo Vincent', company: 'DataCorp', uploadDate: '2026-02-07', totalLeads: 145, pending: 12, qualified: 120, rejected: 8, duplicates: 5, status: 'en_cours' },
-  { id: 'IMP-005', fileName: 'prospects_energie.xlsx', fournisseur: 'Sophie Martin', company: 'Agence Ads Paris', uploadDate: '2026-02-06', totalLeads: 200, pending: 0, qualified: 175, rejected: 18, duplicates: 7, status: 'termine' },
-  { id: 'IMP-006', fileName: 'leads_mutuelle.csv', fournisseur: 'Thomas Moreau', company: 'Solar France', uploadDate: '2026-02-05', totalLeads: 95, pending: 95, qualified: 0, rejected: 0, duplicates: 0, status: 'en_attente' },
-  { id: 'IMP-007', fileName: 'batch_telecom_jan.xlsx', fournisseur: 'Emma Garcia', company: 'Digital Agency', uploadDate: '2026-02-04', totalLeads: 410, pending: 0, qualified: 365, rejected: 30, duplicates: 15, status: 'termine' },
-  { id: 'IMP-008', fileName: 'leads_formation_pro.csv', fournisseur: 'Hugo Vincent', company: 'DataCorp', uploadDate: '2026-02-03', totalLeads: 78, pending: 50, qualified: 20, rejected: 5, duplicates: 3, status: 'en_cours' },
-];
+import { getAgent, getAgentImports } from '../../services/api';
+import type { AgentImport } from '../../types';
 
 export default function AgentImportsPage() {
   const [search, setSearch] = useState('');
-  const [filterStatus, setFilterStatus] = useState<'all' | Import['status']>('all');
+  const [filterStatus, setFilterStatus] = useState<'all' | AgentImport['status']>('all');
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedImport, setSelectedImport] = useState<Import | null>(null);
+  const [selectedImport, setSelectedImport] = useState<AgentImport | null>(null);
   const perPage = 6;
 
   const { data: mockAgent } = useApi(getAgent, []);
+  const { data: importsData } = useApi(getAgentImports, []);
+  const allImports = importsData ?? [];
 
-  const filtered = mockImports
+  const filtered = allImports
     .filter(i => filterStatus === 'all' || i.status === filterStatus)
     .filter(i => {
       if (!search) return true;
@@ -50,15 +28,15 @@ export default function AgentImportsPage() {
   const paginated = filtered.slice((currentPage - 1) * perPage, currentPage * perPage);
 
   const stats = {
-    total: mockImports.length,
-    enCours: mockImports.filter(i => i.status === 'en_cours').length,
-    termine: mockImports.filter(i => i.status === 'termine').length,
-    enAttente: mockImports.filter(i => i.status === 'en_attente').length,
-    totalLeads: mockImports.reduce((s, i) => s + i.totalLeads, 0),
-    pendingLeads: mockImports.reduce((s, i) => s + i.pending, 0),
+    total: allImports.length,
+    enCours: allImports.filter(i => i.status === 'en_cours').length,
+    termine: allImports.filter(i => i.status === 'termine').length,
+    enAttente: allImports.filter(i => i.status === 'en_attente').length,
+    totalLeads: allImports.reduce((s, i) => s + i.totalLeads, 0),
+    pendingLeads: allImports.reduce((s, i) => s + i.pending, 0),
   };
 
-  const getStatusBadge = (status: Import['status']) => {
+  const getStatusBadge = (status: AgentImport['status']) => {
     const styles = {
       en_cours: { bg: 'bg-blue-100', text: 'text-blue-700', label: 'En cours', icon: <Clock size={12} /> },
       termine: { bg: 'bg-green-100', text: 'text-green-700', label: 'Terminé', icon: <CheckCircle size={12} /> },

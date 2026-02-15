@@ -1,0 +1,18 @@
+{
+  "gains": [
+    { "id": "F-001", "fournisseur": "Sophie Martin", "company": "Agence Ads Paris", "email": "sophie@agence-ads.fr", "iban": "FR76 •••• •••• 4521", "totalLeadsSold": 1250, "totalEarnings": 28540, "pendingAmount": 2450, "paidAmount": 26090, "lastPaymentDate": "2026-01-31", "status": "active" },
+    { "id": "F-002", "fournisseur": "Thomas Moreau", "company": "Solar France", "email": "thomas@solar-france.com", "iban": "FR76 •••• •••• 7834", "totalLeadsSold": 890, "totalEarnings": 19250, "pendingAmount": 0, "paidAmount": 19250, "lastPaymentDate": "2026-02-08", "status": "active" },
+    { "id": "F-003", "fournisseur": "Emma Garcia", "company": "Digital Agency", "email": "emma@digital-agency.fr", "iban": "FR76 •••• •••• 1256", "totalLeadsSold": 620, "totalEarnings": 14300, "pendingAmount": 1950, "paidAmount": 12350, "lastPaymentDate": "2026-01-31", "status": "active" },
+    { "id": "F-004", "fournisseur": "Hugo Vincent", "company": "DataCorp", "email": "hugo@datacorp.fr", "iban": "FR76 •••• •••• 9012", "totalLeadsSold": 450, "totalEarnings": 10800, "pendingAmount": 850, "paidAmount": 9950, "lastPaymentDate": "2026-01-15", "status": "active" },
+    { "id": "F-005", "fournisseur": "Camille Laurent", "company": "Éco Énergie", "email": "camille@eco-energie.fr", "iban": "", "totalLeadsSold": 0, "totalEarnings": 0, "pendingAmount": 0, "paidAmount": 0, "lastPaymentDate": "-", "status": "pending_validation" },
+    { "id": "F-006", "fournisseur": "Sarah Michel", "company": "WebFactory", "email": "sarah@webfactory.fr", "iban": "", "totalLeadsSold": 0, "totalEarnings": 0, "pendingAmount": 0, "paidAmount": 0, "lastPaymentDate": "-", "status": "pending_validation" }
+  ],
+  "monthlyGains": [
+    { "month": "Sep", "gains": 4200, "paid": 3800 },
+    { "month": "Oct", "gains": 5500, "paid": 5100 },
+    { "month": "Nov", "gains": 6800, "paid": 6200 },
+    { "month": "Déc", "gains": 8100, "paid": 7600 },
+    { "month": "Jan", "gains": 9500, "paid": 8800 },
+    { "month": "Fév", "gains": 5250, "paid": 2450 }
+  ]
+}

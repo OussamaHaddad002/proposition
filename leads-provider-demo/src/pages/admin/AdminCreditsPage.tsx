@@ -1,45 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CreditCard, Save, Plus, Trash2, Edit, Package, Settings, DollarSign, Gift, ToggleLeft, ToggleRight } from 'lucide-react';
 import Layout from '../../components/Layout';
-
-interface CreditPack {
-  id: string;
-  name: string;
-  credits: number;
-  price: number;
-  pricePerCredit: number;
-  bonus: number;
-  popular: boolean;
-  active: boolean;
-}
-
-interface CreditRule {
-  id: string;
-  name: string;
-  description: string;
-  value: number;
-  unit: string;
-  active: boolean;
-}
+import { useApi } from '../../hooks/useApi';
+import { getAdminCreditPacks, getCreditRules } from '../../services/api';
+import type { AdminCreditPack, CreditRule } from '../../types';
 
 export default function AdminCreditsPage() {
-  const [packs, setPacks] = useState<CreditPack[]>([
-    { id: '1', name: 'Starter', credits: 20, price: 99, pricePerCredit: 4.95, bonus: 0, popular: false, active: true },
-    { id: '2', name: 'Pro', credits: 50, price: 199, pricePerCredit: 3.98, bonus: 5, popular: true, active: true },
-    { id: '3', name: 'Business', credits: 150, price: 499, pricePerCredit: 3.33, bonus: 20, popular: false, active: true },
-    { id: '4', name: 'Enterprise', credits: 500, price: 1299, pricePerCredit: 2.60, bonus: 75, popular: false, active: false },
-  ]);
+  const { data: packsData } = useApi(getAdminCreditPacks, []);
+  const { data: rulesData } = useApi(getCreditRules, []);
 
-  const [rules, setRules] = useState<CreditRule[]>([
-    { id: '1', name: 'Coût lead standard', description: 'Crédits nécessaires pour acheter un lead standard', value: 3, unit: 'crédits', active: true },
-    { id: '2', name: 'Coût lead exclusif', description: 'Crédits nécessaires pour acheter un lead exclusif', value: 5, unit: 'crédits', active: true },
-    { id: '3', name: 'Bonus inscription', description: 'Crédits offerts lors de la première inscription', value: 10, unit: 'crédits', active: true },
-    { id: '4', name: 'Bonus fidélité (mensuel)', description: 'Crédits offerts chaque mois pour les utilisateurs actifs', value: 5, unit: 'crédits', active: true },
-    { id: '5', name: 'Seuil alerte', description: 'Alerte quand le solde descend sous ce seuil', value: 5, unit: 'crédits', active: true },
-    { id: '6', name: 'Limite achat/jour', description: 'Nombre maximum de leads achetables par jour', value: 50, unit: 'leads', active: false },
-  ]);
+  const [packs, setPacks] = useState<AdminCreditPack[]>([]);
+  const [rules, setRules] = useState<CreditRule[]>([]);
 
-  const [editingPack, setEditingPack] = useState<CreditPack | null>(null);
+  useEffect(() => { if (packsData) setPacks(packsData); }, [packsData]);
+  useEffect(() => { if (rulesData) setRules(rulesData); }, [rulesData]);
+
+  const [editingPack, setEditingPack] = useState<AdminCreditPack | null>(null);
   const [showNewPack, setShowNewPack] = useState(false);
 
   const stats = {

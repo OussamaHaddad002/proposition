@@ -1,42 +1,21 @@
 import { useState } from 'react';
 import { FileSpreadsheet, Search, Eye, Clock, CheckCircle, XCircle, Download, ChevronLeft, ChevronRight, User, RotateCcw, Trash2, RefreshCw } from 'lucide-react';
 import Layout from '../../components/Layout';
-
-interface Import {
-  id: string;
-  fileName: string;
-  fournisseur: string;
-  company: string;
-  uploadDate: string;
-  totalLeads: number;
-  valid: number;
-  invalid: number;
-  duplicates: number;
-  status: 'processing' | 'completed' | 'failed' | 'pending_review';
-  processingTime?: string;
-}
-
-const mockImports: Import[] = [
-  { id: 'IMP-001', fileName: 'leads_solaire_jan2026.csv', fournisseur: 'Sophie Martin', company: 'Agence Ads Paris', uploadDate: '2026-02-10', totalLeads: 250, valid: 230, invalid: 10, duplicates: 10, status: 'completed', processingTime: '2m 15s' },
-  { id: 'IMP-002', fileName: 'prospects_assurance.xlsx', fournisseur: 'Thomas Moreau', company: 'Solar France', uploadDate: '2026-02-09', totalLeads: 180, valid: 165, invalid: 7, duplicates: 8, status: 'completed', processingTime: '1m 45s' },
-  { id: 'IMP-003', fileName: 'leads_immobilier_fev.csv', fournisseur: 'Emma Garcia', company: 'Digital Agency', uploadDate: '2026-02-08', totalLeads: 320, valid: 0, invalid: 0, duplicates: 0, status: 'pending_review' },
-  { id: 'IMP-004', fileName: 'data_credit_2026.csv', fournisseur: 'Hugo Vincent', company: 'DataCorp', uploadDate: '2026-02-07', totalLeads: 145, valid: 130, invalid: 5, duplicates: 10, status: 'processing', processingTime: '—' },
-  { id: 'IMP-005', fileName: 'prospects_energie.xlsx', fournisseur: 'Sophie Martin', company: 'Agence Ads Paris', uploadDate: '2026-02-06', totalLeads: 200, valid: 185, invalid: 8, duplicates: 7, status: 'completed', processingTime: '1m 30s' },
-  { id: 'IMP-006', fileName: 'CORRUPTED_data.csv', fournisseur: 'Thomas Moreau', company: 'Solar France', uploadDate: '2026-02-05', totalLeads: 95, valid: 0, invalid: 95, duplicates: 0, status: 'failed' },
-  { id: 'IMP-007', fileName: 'batch_telecom_jan.xlsx', fournisseur: 'Emma Garcia', company: 'Digital Agency', uploadDate: '2026-02-04', totalLeads: 410, valid: 390, invalid: 5, duplicates: 15, status: 'completed', processingTime: '3m 05s' },
-  { id: 'IMP-008', fileName: 'leads_formation_pro.csv', fournisseur: 'Hugo Vincent', company: 'DataCorp', uploadDate: '2026-02-03', totalLeads: 78, valid: 72, invalid: 3, duplicates: 3, status: 'completed', processingTime: '0m 55s' },
-  { id: 'IMP-009', fileName: 'leads_mutuelle_v2.csv', fournisseur: 'Sarah Michel', company: 'WebFactory', uploadDate: '2026-02-02', totalLeads: 156, valid: 0, invalid: 0, duplicates: 0, status: 'pending_review' },
-  { id: 'IMP-010', fileName: 'clients_fintech.xlsx', fournisseur: 'Hugo Vincent', company: 'DataCorp', uploadDate: '2026-02-01', totalLeads: 220, valid: 210, invalid: 4, duplicates: 6, status: 'completed', processingTime: '2m 00s' },
-];
+import { useApi } from '../../hooks/useApi';
+import { getAdminImports } from '../../services/api';
+import type { AdminImport } from '../../types';
 
 export default function AdminImportsPage() {
   const [search, setSearch] = useState('');
-  const [filterStatus, setFilterStatus] = useState<'all' | Import['status']>('all');
+  const [filterStatus, setFilterStatus] = useState<'all' | AdminImport['status']>('all');
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedImport, setSelectedImport] = useState<Import | null>(null);
+  const [selectedImport, setSelectedImport] = useState<AdminImport | null>(null);
   const perPage = 8;
 
-  const filtered = mockImports
+  const { data: importsData } = useApi(getAdminImports, []);
+  const allImports = importsData ?? [];
+
+  const filtered = allImports
     .filter(i => filterStatus === 'all' || i.status === filterStatus)
     .filter(i => {
       if (!search) return true;
@@ -48,15 +27,15 @@ export default function AdminImportsPage() {
   const paginated = filtered.slice((currentPage - 1) * perPage, currentPage * perPage);
 
   const stats = {
-    total: mockImports.length,
-    completed: mockImports.filter(i => i.status === 'completed').length,
-    processing: mockImports.filter(i => i.status === 'processing').length,
-    pendingReview: mockImports.filter(i => i.status === 'pending_review').length,
-    failed: mockImports.filter(i => i.status === 'failed').length,
-    totalLeads: mockImports.reduce((s, i) => s + i.totalLeads, 0),
+    total: allImports.length,
+    completed: allImports.filter(i => i.status === 'completed').length,
+    processing: allImports.filter(i => i.status === 'processing').length,
+    pendingReview: allImports.filter(i => i.status === 'pending_review').length,
+    failed: allImports.filter(i => i.status === 'failed').length,
+    totalLeads: allImports.reduce((s, i) => s + i.totalLeads, 0),
   };
 
-  const getStatusBadge = (status: Import['status']) => {
+  const getStatusBadge = (status: AdminImport['status']) => {
     const styles = {
       completed: { bg: 'bg-green-100', text: 'text-green-700', label: 'Terminé', icon: <CheckCircle size={12} /> },
       processing: { bg: 'bg-blue-100', text: 'text-blue-700', label: 'En traitement', icon: <RefreshCw size={12} className="animate-spin" /> },

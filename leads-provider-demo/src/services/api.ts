@@ -15,6 +15,14 @@ import type {
   CreditPack,
   Payment,
   Notification,
+  AdminImport,
+  AgentImport,
+  AudioRecord,
+  Transaction,
+  AdminCreditPack,
+  CreditRule,
+  FournisseurGain,
+  Virement,
 } from '../types';
 
 // ─── helpers ────────────────────────────────────────────────────────
@@ -146,4 +154,83 @@ export async function getRegionDistribution() {
 export async function getScoreExplanations(): Promise<ScoreExplanation[]> {
   const data = await fetchJson<StatsPayload>('stats.json');
   return data.scoreExplanations;
+}
+
+// ─── Admin Imports ──────────────────────────────────────────────────
+export async function getAdminImports(): Promise<AdminImport[]> {
+  return fetchJson<AdminImport[]>('admin-imports.json');
+}
+
+// ─── Agent Imports ──────────────────────────────────────────────────
+export async function getAgentImports(): Promise<AgentImport[]> {
+  return fetchJson<AgentImport[]>('agent-imports.json');
+}
+
+// ─── Audio Records ──────────────────────────────────────────────────
+export async function getAudioRecords(): Promise<AudioRecord[]> {
+  return fetchJson<AudioRecord[]>('audios.json');
+}
+
+// ─── Transactions (Paiements) ───────────────────────────────────────
+interface TransactionsPayload {
+  transactions: Transaction[];
+  monthlyRevenue: { month: string; revenus: number; payouts: number }[];
+}
+
+export async function getTransactions(): Promise<Transaction[]> {
+  const data = await fetchJson<TransactionsPayload>('transactions.json');
+  return data.transactions;
+}
+
+export async function getMonthlyRevenue() {
+  const data = await fetchJson<TransactionsPayload>('transactions.json');
+  return data.monthlyRevenue;
+}
+
+// ─── Credit Config (Admin) ──────────────────────────────────────────
+interface CreditConfigPayload {
+  packs: AdminCreditPack[];
+  rules: CreditRule[];
+}
+
+export async function getAdminCreditPacks(): Promise<AdminCreditPack[]> {
+  const data = await fetchJson<CreditConfigPayload>('credit-config.json');
+  return data.packs;
+}
+
+export async function getCreditRules(): Promise<CreditRule[]> {
+  const data = await fetchJson<CreditConfigPayload>('credit-config.json');
+  return data.rules;
+}
+
+// ─── Fournisseur Gains ──────────────────────────────────────────────
+interface GainsPayload {
+  gains: FournisseurGain[];
+  monthlyGains: { month: string; gains: number; paid: number }[];
+}
+
+export async function getFournisseurGains(): Promise<FournisseurGain[]> {
+  const data = await fetchJson<GainsPayload>('fournisseur-gains.json');
+  return data.gains;
+}
+
+export async function getMonthlyGains() {
+  const data = await fetchJson<GainsPayload>('fournisseur-gains.json');
+  return data.monthlyGains;
+}
+
+// ─── Virements ──────────────────────────────────────────────────────
+interface VirementsPayload {
+  virements: Virement[];
+  monthlyAmounts: { month: string; amount: number }[];
+}
+
+export async function getVirements(): Promise<Virement[]> {
+  const data = await fetchJson<VirementsPayload>('virements.json');
+  return data.virements;
+}
+
+export async function getMonthlyVirements() {
+  const data = await fetchJson<VirementsPayload>('virements.json');
+  return data.monthlyAmounts;
 }

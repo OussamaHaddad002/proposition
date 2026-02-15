@@ -2,35 +2,9 @@ import { useState } from 'react';
 import { Search, CreditCard, Download, Eye, ChevronLeft, ChevronRight, DollarSign, TrendingUp, Clock, ArrowUpRight, ArrowDownRight, RefreshCw } from 'lucide-react';
 import Layout from '../../components/Layout';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-
-interface Transaction {
-  id: string;
-  type: 'credit_purchase' | 'lead_purchase' | 'refund' | 'bonus' | 'fournisseur_payment';
-  userName: string;
-  userRole: 'acheteur' | 'fournisseur' | 'admin';
-  company?: string;
-  amount: number;
-  credits?: number;
-  date: string;
-  status: 'completed' | 'pending' | 'failed' | 'refunded';
-  description: string;
-  paymentMethod?: string;
-}
-
-const mockTransactions: Transaction[] = [
-  { id: 'TRX-001', type: 'credit_purchase', userName: 'Marie Leroy', userRole: 'acheteur', company: 'PME Lille', amount: 199, credits: 50, date: '2026-02-10T15:30:00', status: 'completed', description: 'Pack 50 crédits', paymentMethod: 'Visa •••• 4521' },
-  { id: 'TRX-002', type: 'lead_purchase', userName: 'Pierre Dupont', userRole: 'acheteur', company: 'Assurance Vie Pro', amount: 45, credits: 3, date: '2026-02-10T14:15:00', status: 'completed', description: 'Achat 3 leads — Assurance' },
-  { id: 'TRX-003', type: 'fournisseur_payment', userName: 'Sophie Martin', userRole: 'fournisseur', company: 'Agence Ads Paris', amount: 2450, date: '2026-02-10T10:00:00', status: 'pending', description: 'Virement gains Fév 2026' },
-  { id: 'TRX-004', type: 'credit_purchase', userName: 'Léa Roux', userRole: 'acheteur', company: 'Finance Plus', amount: 499, credits: 150, date: '2026-02-09T16:45:00', status: 'completed', description: 'Pack 150 crédits', paymentMethod: 'Mastercard •••• 8901' },
-  { id: 'TRX-005', type: 'refund', userName: 'Pierre Dupont', userRole: 'acheteur', company: 'Assurance Vie Pro', amount: -15, credits: 1, date: '2026-02-09T11:20:00', status: 'refunded', description: 'Remboursement lead #L-045 (doublon)' },
-  { id: 'TRX-006', type: 'fournisseur_payment', userName: 'Thomas Moreau', userRole: 'fournisseur', company: 'Solar France', amount: 3820, date: '2026-02-08T09:30:00', status: 'completed', description: 'Virement gains Jan 2026' },
-  { id: 'TRX-007', type: 'bonus', userName: 'Marie Leroy', userRole: 'acheteur', company: 'PME Lille', amount: 0, credits: 10, date: '2026-02-08T08:00:00', status: 'completed', description: 'Bonus fidélité — 10 crédits offerts' },
-  { id: 'TRX-008', type: 'credit_purchase', userName: 'Romain Bertrand', userRole: 'acheteur', company: 'Crédit Expert', amount: 99, credits: 20, date: '2026-02-07T14:30:00', status: 'failed', description: 'Pack 20 crédits — Paiement échoué', paymentMethod: 'Visa •••• 7890' },
-  { id: 'TRX-009', type: 'lead_purchase', userName: 'Léa Roux', userRole: 'acheteur', company: 'Finance Plus', amount: 75, credits: 5, date: '2026-02-07T10:15:00', status: 'completed', description: 'Achat 5 leads — Crédit immobilier' },
-  { id: 'TRX-010', type: 'fournisseur_payment', userName: 'Emma Garcia', userRole: 'fournisseur', company: 'Digital Agency', amount: 1950, date: '2026-02-06T09:00:00', status: 'completed', description: 'Virement gains Jan 2026' },
-  { id: 'TRX-011', type: 'credit_purchase', userName: 'Marie Leroy', userRole: 'acheteur', company: 'PME Lille', amount: 499, credits: 150, date: '2026-02-05T12:00:00', status: 'completed', description: 'Pack 150 crédits', paymentMethod: 'Visa •••• 4521' },
-  { id: 'TRX-012', type: 'refund', userName: 'Romain Bertrand', userRole: 'acheteur', company: 'Crédit Expert', amount: -30, credits: 2, date: '2026-02-04T15:30:00', status: 'refunded', description: 'Remboursement lead invalide' },
-];
+import { useApi } from '../../hooks/useApi';
+import { getTransactions, getMonthlyRevenue } from '../../services/api';
+import type { Transaction } from '../../types';
 
 export default function AdminPaiementsPage() {
   const [search, setSearch] = useState('');
@@ -40,7 +14,12 @@ export default function AdminPaiementsPage() {
   const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
   const perPage = 8;
 
-  const filtered = mockTransactions
+  const { data: transactionsData } = useApi(getTransactions, []);
+  const { data: monthlyRevenueData } = useApi(getMonthlyRevenue, []);
+  const allTransactions = transactionsData ?? [];
+  const monthlyData = monthlyRevenueData ?? [];
+
+  const filtered = allTransactions
     .filter(t => filterType === 'all' || t.type === filterType)
     .filter(t => filterStatus === 'all' || t.status === filterStatus)
     .filter(t => {
@@ -52,25 +31,16 @@ export default function AdminPaiementsPage() {
   const totalPages = Math.ceil(filtered.length / perPage);
   const paginated = filtered.slice((currentPage - 1) * perPage, currentPage * perPage);
 
-  const totalRevenue = mockTransactions.filter(t => t.type === 'credit_purchase' && t.status === 'completed').reduce((s, t) => s + t.amount, 0);
-  const totalPayouts = mockTransactions.filter(t => t.type === 'fournisseur_payment' && t.status === 'completed').reduce((s, t) => s + t.amount, 0);
-  const pendingPayouts = mockTransactions.filter(t => t.type === 'fournisseur_payment' && t.status === 'pending').reduce((s, t) => s + t.amount, 0);
-
-  const monthlyData = [
-    { month: 'Sep', revenus: 2800, payouts: 1800 },
-    { month: 'Oct', revenus: 3500, payouts: 2200 },
-    { month: 'Nov', revenus: 4200, payouts: 2800 },
-    { month: 'Déc', revenus: 5100, payouts: 3400 },
-    { month: 'Jan', revenus: 6000, payouts: 4100 },
-    { month: 'Fév', revenus: 1296, payouts: 2450 },
-  ];
+  const totalRevenue = allTransactions.filter(t => t.type === 'credit_purchase' && t.status === 'completed').reduce((s, t) => s + t.amount, 0);
+  const totalPayouts = allTransactions.filter(t => t.type === 'fournisseur_payment' && t.status === 'completed').reduce((s, t) => s + t.amount, 0);
+  const pendingPayouts = allTransactions.filter(t => t.type === 'fournisseur_payment' && t.status === 'pending').reduce((s, t) => s + t.amount, 0);
 
   const typeDistribution = [
-    { name: 'Achats crédits', value: mockTransactions.filter(t => t.type === 'credit_purchase').length, color: '#3b82f6' },
-    { name: 'Achats leads', value: mockTransactions.filter(t => t.type === 'lead_purchase').length, color: '#10b981' },
-    { name: 'Paiements fourn.', value: mockTransactions.filter(t => t.type === 'fournisseur_payment').length, color: '#f59e0b' },
-    { name: 'Remboursements', value: mockTransactions.filter(t => t.type === 'refund').length, color: '#ef4444' },
-    { name: 'Bonus', value: mockTransactions.filter(t => t.type === 'bonus').length, color: '#8b5cf6' },
+    { name: 'Achats crédits', value: allTransactions.filter(t => t.type === 'credit_purchase').length, color: '#3b82f6' },
+    { name: 'Achats leads', value: allTransactions.filter(t => t.type === 'lead_purchase').length, color: '#10b981' },
+    { name: 'Paiements fourn.', value: allTransactions.filter(t => t.type === 'fournisseur_payment').length, color: '#f59e0b' },
+    { name: 'Remboursements', value: allTransactions.filter(t => t.type === 'refund').length, color: '#ef4444' },
+    { name: 'Bonus', value: allTransactions.filter(t => t.type === 'bonus').length, color: '#8b5cf6' },
   ];
 
   const getTypeBadge = (type: Transaction['type']) => {
@@ -122,7 +92,7 @@ export default function AdminPaiementsPage() {
           </div>
           <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
             <div className="flex items-center gap-2 mb-2 text-gray-500"><CreditCard size={20} /><span className="text-sm">Transactions</span></div>
-            <p className="text-2xl font-bold text-gray-900">{mockTransactions.length}</p>
+            <p className="text-2xl font-bold text-gray-900">{allTransactions.length}</p>
             <p className="text-xs text-gray-400">ce mois</p>
           </div>
         </div>

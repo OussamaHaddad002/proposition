@@ -109,3 +109,110 @@ export interface CreditPack {
   popular?: boolean;
   bonus?: number;
 }
+
+// ─── Admin Imports ──────────────────────────────────────────────────
+export interface AdminImport {
+  id: string;
+  fileName: string;
+  fournisseur: string;
+  company: string;
+  uploadDate: string;
+  totalLeads: number;
+  valid: number;
+  invalid: number;
+  duplicates: number;
+  status: 'processing' | 'completed' | 'failed' | 'pending_review';
+  processingTime?: string;
+}
+
+// ─── Agent Imports ──────────────────────────────────────────────────
+export interface AgentImport {
+  id: string;
+  fileName: string;
+  fournisseur: string;
+  company: string;
+  uploadDate: string;
+  totalLeads: number;
+  pending: number;
+  qualified: number;
+  rejected: number;
+  duplicates: number;
+  status: 'en_cours' | 'termine' | 'en_attente';
+}
+
+// ─── Audio Records ──────────────────────────────────────────────────
+export interface AudioRecord {
+  id: string;
+  leadName: string;
+  leadCompany: string;
+  agentName: string;
+  date: string;
+  duration: string;
+  durationSeconds: number;
+  size: string;
+  status: 'available' | 'processing' | 'archived';
+  qualificationResult: 'qualified' | 'not_qualified' | 'callback' | 'pending';
+}
+
+// ─── Transactions (Paiements) ───────────────────────────────────────
+export interface Transaction {
+  id: string;
+  type: 'credit_purchase' | 'lead_purchase' | 'refund' | 'bonus' | 'fournisseur_payment';
+  userName: string;
+  userRole: 'acheteur' | 'fournisseur' | 'admin';
+  company?: string;
+  amount: number;
+  credits?: number;
+  date: string;
+  status: 'completed' | 'pending' | 'failed' | 'refunded';
+  description: string;
+  paymentMethod?: string;
+}
+
+// ─── Credit Config (Admin) ──────────────────────────────────────────
+export interface AdminCreditPack {
+  id: string;
+  name: string;
+  credits: number;
+  price: number;
+  pricePerCredit: number;
+  bonus: number;
+  popular: boolean;
+  active: boolean;
+}
+
+export interface CreditRule {
+  id: string;
+  name: string;
+  description: string;
+  value: number;
+  unit: string;
+  active: boolean;
+}
+
+// ─── Fournisseur Gains ──────────────────────────────────────────────
+export interface FournisseurGain {
+  id: string;
+  fournisseur: string;
+  company: string;
+  email: string;
+  iban: string;
+  totalLeadsSold: number;
+  totalEarnings: number;
+  pendingAmount: number;
+  paidAmount: number;
+  lastPaymentDate: string;
+  status: 'active' | 'pending_validation' | 'suspended';
+}
+
+// ─── Virements (Fournisseur) ────────────────────────────────────────
+export interface Virement {
+  id: string;
+  reference: string;
+  amount: number;
+  date: string;
+  status: 'completed' | 'pending' | 'failed';
+  leadsCount: number;
+  period: string;
+  iban: string;
+}

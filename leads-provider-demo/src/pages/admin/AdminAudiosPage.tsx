@@ -1,32 +1,9 @@
 import { useState } from 'react';
 import { Headphones, Search, Play, Pause, Trash2, Download, Eye, Clock, CheckCircle, ChevronLeft, ChevronRight, Phone, User, Calendar, Volume2 } from 'lucide-react';
 import Layout from '../../components/Layout';
-
-interface AudioRecord {
-  id: string;
-  leadName: string;
-  leadCompany: string;
-  agentName: string;
-  date: string;
-  duration: string;
-  durationSeconds: number;
-  size: string;
-  status: 'available' | 'processing' | 'archived';
-  qualificationResult: 'qualified' | 'not_qualified' | 'callback' | 'pending';
-}
-
-const mockAudios: AudioRecord[] = [
-  { id: 'AUD-001', leadName: 'Jean Dupont', leadCompany: 'Solaris SARL', agentName: 'Lucas Dubois', date: '2026-02-10T14:30:00', duration: '4:25', durationSeconds: 265, size: '3.2 MB', status: 'available', qualificationResult: 'qualified' },
-  { id: 'AUD-002', leadName: 'Marie Laurent', leadCompany: 'EcoHabitat', agentName: 'Julie Bernard', date: '2026-02-10T11:15:00', duration: '2:48', durationSeconds: 168, size: '2.1 MB', status: 'available', qualificationResult: 'not_qualified' },
-  { id: 'AUD-003', leadName: 'Pierre Martin', leadCompany: 'AssurPlus', agentName: 'Lucas Dubois', date: '2026-02-09T16:45:00', duration: '6:12', durationSeconds: 372, size: '4.7 MB', status: 'available', qualificationResult: 'qualified' },
-  { id: 'AUD-004', leadName: 'Sophie Leroy', leadCompany: 'CréditExpert', agentName: 'Manon Fournier', date: '2026-02-09T10:20:00', duration: '1:35', durationSeconds: 95, size: '1.2 MB', status: 'available', qualificationResult: 'callback' },
-  { id: 'AUD-005', leadName: 'Thomas Bernard', leadCompany: 'ImmoPro', agentName: 'Julie Bernard', date: '2026-02-08T15:00:00', duration: '3:50', durationSeconds: 230, size: '2.9 MB', status: 'archived', qualificationResult: 'qualified' },
-  { id: 'AUD-006', leadName: 'Camille Petit', leadCompany: 'TechnoVert', agentName: 'Lucas Dubois', date: '2026-02-08T09:30:00', duration: '5:02', durationSeconds: 302, size: '3.8 MB', status: 'available', qualificationResult: 'not_qualified' },
-  { id: 'AUD-007', leadName: 'Antoine Moreau', leadCompany: 'SolarEnergy', agentName: 'Manon Fournier', date: '2026-02-07T14:10:00', duration: '2:15', durationSeconds: 135, size: '1.7 MB', status: 'processing', qualificationResult: 'pending' },
-  { id: 'AUD-008', leadName: 'Emma Roux', leadCompany: 'FinancePlus', agentName: 'Lucas Dubois', date: '2026-02-07T11:45:00', duration: '7:30', durationSeconds: 450, size: '5.6 MB', status: 'available', qualificationResult: 'qualified' },
-  { id: 'AUD-009', leadName: 'Nicolas Garcia', leadCompany: 'DataSoft', agentName: 'Julie Bernard', date: '2026-02-06T16:20:00', duration: '3:10', durationSeconds: 190, size: '2.4 MB', status: 'available', qualificationResult: 'callback' },
-  { id: 'AUD-010', leadName: 'Léa Vincent', leadCompany: 'WebAgency', agentName: 'Manon Fournier', date: '2026-02-06T10:00:00', duration: '4:45', durationSeconds: 285, size: '3.5 MB', status: 'archived', qualificationResult: 'qualified' },
-];
+import { useApi } from '../../hooks/useApi';
+import { getAudioRecords } from '../../services/api';
+import type { AudioRecord } from '../../types';
 
 export default function AdminAudiosPage() {
   const [search, setSearch] = useState('');
@@ -37,7 +14,10 @@ export default function AdminAudiosPage() {
   const [selectedAudio, setSelectedAudio] = useState<AudioRecord | null>(null);
   const perPage = 8;
 
-  const filtered = mockAudios
+  const { data: audiosData } = useApi(getAudioRecords, []);
+  const allAudios = audiosData ?? [];
+
+  const filtered = allAudios
     .filter(a => filterStatus === 'all' || a.status === filterStatus)
     .filter(a => filterResult === 'all' || a.qualificationResult === filterResult)
     .filter(a => {
@@ -49,8 +29,8 @@ export default function AdminAudiosPage() {
   const totalPages = Math.ceil(filtered.length / perPage);
   const paginated = filtered.slice((currentPage - 1) * perPage, currentPage * perPage);
 
-  const totalDuration = mockAudios.reduce((s, a) => s + a.durationSeconds, 0);
-  const totalSizeMB = mockAudios.reduce((s, a) => s + parseFloat(a.size), 0);
+  const totalDuration = allAudios.reduce((s, a) => s + a.durationSeconds, 0);
+  const totalSizeMB = allAudios.reduce((s, a) => s + parseFloat(a.size), 0);
 
   const getResultBadge = (result: AudioRecord['qualificationResult']) => {
     const styles = {
@@ -94,7 +74,7 @@ export default function AdminAudiosPage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
             <div className="flex items-center gap-2 text-gray-500 mb-1"><Headphones size={18} /><span className="text-sm">Total</span></div>
-            <p className="text-2xl font-bold text-gray-900">{mockAudios.length}</p>
+            <p className="text-2xl font-bold text-gray-900">{allAudios.length}</p>
             <p className="text-xs text-gray-400">enregistrements</p>
           </div>
           <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
@@ -107,7 +87,7 @@ export default function AdminAudiosPage() {
           </div>
           <div className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
             <div className="flex items-center gap-2 text-gray-500 mb-1"><CheckCircle size={18} /><span className="text-sm">Qualifiés</span></div>
-            <p className="text-2xl font-bold text-green-600">{mockAudios.filter(a => a.qualificationResult === 'qualified').length}</p>
+            <p className="text-2xl font-bold text-green-600">{allAudios.filter(a => a.qualificationResult === 'qualified').length}</p>
           </div>
         </div>
 

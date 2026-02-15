@@ -1,0 +1,24 @@
+{
+  "transactions": [
+    { "id": "TRX-001", "type": "credit_purchase", "userName": "Marie Leroy", "userRole": "acheteur", "company": "PME Lille", "amount": 199, "credits": 50, "date": "2026-02-10T15:30:00", "status": "completed", "description": "Pack 50 crédits", "paymentMethod": "Visa •••• 4521" },
+    { "id": "TRX-002", "type": "lead_purchase", "userName": "Pierre Dupont", "userRole": "acheteur", "company": "Assurance Vie Pro", "amount": 45, "credits": 3, "date": "2026-02-10T14:15:00", "status": "completed", "description": "Achat 3 leads — Assurance" },
+    { "id": "TRX-003", "type": "fournisseur_payment", "userName": "Sophie Martin", "userRole": "fournisseur", "company": "Agence Ads Paris", "amount": 2450, "date": "2026-02-10T10:00:00", "status": "pending", "description": "Virement gains Fév 2026" },
+    { "id": "TRX-004", "type": "credit_purchase", "userName": "Léa Roux", "userRole": "acheteur", "company": "Finance Plus", "amount": 499, "credits": 150, "date": "2026-02-09T16:45:00", "status": "completed", "description": "Pack 150 crédits", "paymentMethod": "Mastercard •••• 8901" },
+    { "id": "TRX-005", "type": "refund", "userName": "Pierre Dupont", "userRole": "acheteur", "company": "Assurance Vie Pro", "amount": -15, "credits": 1, "date": "2026-02-09T11:20:00", "status": "refunded", "description": "Remboursement lead #L-045 (doublon)" },
+    { "id": "TRX-006", "type": "fournisseur_payment", "userName": "Thomas Moreau", "userRole": "fournisseur", "company": "Solar France", "amount": 3820, "date": "2026-02-08T09:30:00", "status": "completed", "description": "Virement gains Jan 2026" },
+    { "id": "TRX-007", "type": "bonus", "userName": "Marie Leroy", "userRole": "acheteur", "company": "PME Lille", "amount": 0, "credits": 10, "date": "2026-02-08T08:00:00", "status": "completed", "description": "Bonus fidélité — 10 crédits offerts" },
+    { "id": "TRX-008", "type": "credit_purchase", "userName": "Romain Bertrand", "userRole": "acheteur", "company": "Crédit Expert", "amount": 99, "credits": 20, "date": "2026-02-07T14:30:00", "status": "failed", "description": "Pack 20 crédits — Paiement échoué", "paymentMethod": "Visa •••• 7890" },
+    { "id": "TRX-009", "type": "lead_purchase", "userName": "Léa Roux", "userRole": "acheteur", "company": "Finance Plus", "amount": 75, "credits": 5, "date": "2026-02-07T10:15:00", "status": "completed", "description": "Achat 5 leads — Crédit immobilier" },
+    { "id": "TRX-010", "type": "fournisseur_payment", "userName": "Emma Garcia", "userRole": "fournisseur", "company": "Digital Agency", "amount": 1950, "date": "2026-02-06T09:00:00", "status": "completed", "description": "Virement gains Jan 2026" },
+    { "id": "TRX-011", "type": "credit_purchase", "userName": "Marie Leroy", "userRole": "acheteur", "company": "PME Lille", "amount": 499, "credits": 150, "date": "2026-02-05T12:00:00", "status": "completed", "description": "Pack 150 crédits", "paymentMethod": "Visa •••• 4521" },
+    { "id": "TRX-012", "type": "refund", "userName": "Romain Bertrand", "userRole": "acheteur", "company": "Crédit Expert", "amount": -30, "credits": 2, "date": "2026-02-04T15:30:00", "status": "refunded", "description": "Remboursement lead invalide" }
+  ],
+  "monthlyRevenue": [
+    { "month": "Sep", "revenus": 2800, "payouts": 1800 },
+    { "month": "Oct", "revenus": 3500, "payouts": 2200 },
+    { "month": "Nov", "revenus": 4200, "payouts": 2800 },
+    { "month": "Déc", "revenus": 5100, "payouts": 3400 },
+    { "month": "Jan", "revenus": 6000, "payouts": 4100 },
+    { "month": "Fév", "revenus": 1296, "payouts": 2450 }
+  ]
+}

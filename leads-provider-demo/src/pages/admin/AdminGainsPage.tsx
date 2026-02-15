@@ -2,29 +2,9 @@ import { useState } from 'react';
 import { Search, Download, Eye, ChevronLeft, ChevronRight, DollarSign, Clock, CheckCircle, User, Send } from 'lucide-react';
 import Layout from '../../components/Layout';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-
-interface FournisseurGain {
-  id: string;
-  fournisseur: string;
-  company: string;
-  email: string;
-  iban: string;
-  totalLeadsSold: number;
-  totalEarnings: number;
-  pendingAmount: number;
-  paidAmount: number;
-  lastPaymentDate: string;
-  status: 'active' | 'pending_validation' | 'suspended';
-}
-
-const mockGains: FournisseurGain[] = [
-  { id: 'F-001', fournisseur: 'Sophie Martin', company: 'Agence Ads Paris', email: 'sophie@agence-ads.fr', iban: 'FR76 •••• •••• 4521', totalLeadsSold: 1250, totalEarnings: 28540, pendingAmount: 2450, paidAmount: 26090, lastPaymentDate: '2026-01-31', status: 'active' },
-  { id: 'F-002', fournisseur: 'Thomas Moreau', company: 'Solar France', email: 'thomas@solar-france.com', iban: 'FR76 •••• •••• 7834', totalLeadsSold: 890, totalEarnings: 19250, pendingAmount: 0, paidAmount: 19250, lastPaymentDate: '2026-02-08', status: 'active' },
-  { id: 'F-003', fournisseur: 'Emma Garcia', company: 'Digital Agency', email: 'emma@digital-agency.fr', iban: 'FR76 •••• •••• 1256', totalLeadsSold: 620, totalEarnings: 14300, pendingAmount: 1950, paidAmount: 12350, lastPaymentDate: '2026-01-31', status: 'active' },
-  { id: 'F-004', fournisseur: 'Hugo Vincent', company: 'DataCorp', email: 'hugo@datacorp.fr', iban: 'FR76 •••• •••• 9012', totalLeadsSold: 450, totalEarnings: 10800, pendingAmount: 850, paidAmount: 9950, lastPaymentDate: '2026-01-15', status: 'active' },
-  { id: 'F-005', fournisseur: 'Camille Laurent', company: 'Éco Énergie', email: 'camille@eco-energie.fr', iban: '', totalLeadsSold: 0, totalEarnings: 0, pendingAmount: 0, paidAmount: 0, lastPaymentDate: '-', status: 'pending_validation' },
-  { id: 'F-006', fournisseur: 'Sarah Michel', company: 'WebFactory', email: 'sarah@webfactory.fr', iban: '', totalLeadsSold: 0, totalEarnings: 0, pendingAmount: 0, paidAmount: 0, lastPaymentDate: '-', status: 'pending_validation' },
-];
+import { useApi } from '../../hooks/useApi';
+import { getFournisseurGains, getMonthlyGains } from '../../services/api';
+import type { FournisseurGain } from '../../types';
 
 export default function AdminGainsPage() {
   const [search, setSearch] = useState('');
@@ -34,7 +14,12 @@ export default function AdminGainsPage() {
   const [showPayModal, setShowPayModal] = useState<FournisseurGain | null>(null);
   const perPage = 8;
 
-  const filtered = mockGains
+  const { data: gainsData } = useApi(getFournisseurGains, []);
+  const { data: monthlyGainsData } = useApi(getMonthlyGains, []);
+  const allGains = gainsData ?? [];
+  const monthlyData = monthlyGainsData ?? [];
+
+  const filtered = allGains
     .filter(g => filterStatus === 'all' || g.status === filterStatus)
     .filter(g => {
       if (!search) return true;
@@ -45,18 +30,9 @@ export default function AdminGainsPage() {
   const totalPages = Math.ceil(filtered.length / perPage);
   const paginated = filtered.slice((currentPage - 1) * perPage, currentPage * perPage);
 
-  const totalEarnings = mockGains.reduce((s, g) => s + g.totalEarnings, 0);
-  const totalPending = mockGains.reduce((s, g) => s + g.pendingAmount, 0);
-  const totalPaid = mockGains.reduce((s, g) => s + g.paidAmount, 0);
-
-  const monthlyData = [
-    { month: 'Sep', gains: 4200, paid: 3800 },
-    { month: 'Oct', gains: 5500, paid: 5100 },
-    { month: 'Nov', gains: 6800, paid: 6200 },
-    { month: 'Déc', gains: 8100, paid: 7600 },
-    { month: 'Jan', gains: 9500, paid: 8800 },
-    { month: 'Fév', gains: 5250, paid: 2450 },
-  ];
+  const totalEarnings = allGains.reduce((s, g) => s + g.totalEarnings, 0);
+  const totalPending = allGains.reduce((s, g) => s + g.pendingAmount, 0);
+  const totalPaid = allGains.reduce((s, g) => s + g.paidAmount, 0);
 
   const getStatusBadge = (status: FournisseurGain['status']) => {
     const styles = {
@@ -95,7 +71,7 @@ export default function AdminGainsPage() {
           </div>
           <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
             <div className="flex items-center gap-2 mb-2 text-gray-500"><User size={20} /><span className="text-sm">Fournisseurs</span></div>
-            <p className="text-2xl font-bold text-gray-900">{mockGains.filter(g => g.status === 'active').length}</p>
+            <p className="text-2xl font-bold text-gray-900">{allGains.filter(g => g.status === 'active').length}</p>
             <p className="text-xs text-gray-400">actifs</p>
           </div>
         </div>
