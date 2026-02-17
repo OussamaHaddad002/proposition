@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Search,
@@ -70,21 +70,35 @@ const testimonials = [
     name: 'Marie Dupont',
     role: 'Directrice commerciale',
     company: 'Tech Solutions',
-    text: 'Leads Provider a transformé notre prospection. La qualité des leads est exceptionnelle.',
+    text: 'Leads Provider a transformé notre prospection. La qualité des leads est exceptionnelle et le scoring IA nous fait gagner un temps précieux.',
     rating: 5,
   },
   {
     name: 'Pierre Martin',
     role: 'CEO',
     company: 'Green Energy',
-    text: 'Un ROI imbattable. Nous avons doublé nos conversions en 3 mois.',
+    text: 'Un ROI imbattable. Nous avons doublé nos conversions en 3 mois grâce à la qualité des leads fournis.',
     rating: 5,
   },
   {
     name: 'Sophie Bernard',
     role: 'Responsable acquisition',
     company: 'Finance Pro',
-    text: 'Le scoring IA est bluffant. On ne perd plus de temps sur des leads non qualifiés.',
+    text: 'Le scoring IA est bluffant. On ne perd plus de temps sur des leads non qualifiés. Notre équipe est ravie.',
+    rating: 5,
+  },
+  {
+    name: 'Laurent Chevalier',
+    role: 'Directeur général',
+    company: 'Immo Conseil',
+    text: 'En tant que fournisseur, la plateforme m\'a permis de monétiser mes leads efficacement. Les paiements sont rapides et transparents.',
+    rating: 5,
+  },
+  {
+    name: 'Camille Roux',
+    role: 'Responsable marketing',
+    company: 'SolarTech',
+    text: 'L\'interface est intuitive et le catalogue de leads est très complet. Nous avons trouvé exactement les prospects que nous cherchions.',
     rating: 5,
   },
 ];
@@ -98,6 +112,28 @@ export default function HomePage() {
   const filteredServices = services.filter((s) =>
     s.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
+
+  // ─── Testimonials Carousel ────────────────────────────────
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [scrollPos, setScrollPos] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    if (isPaused) return;
+    const timer = setInterval(() => {
+      setScrollPos((prev) => prev + 1);
+    }, 30);
+    return () => clearInterval(timer);
+  }, [isPaused]);
+
+  const handleCarouselReset = useCallback((el: HTMLDivElement | null) => {
+    if (!el) return;
+    // When we've scrolled past half (the duplicated set), reset seamlessly
+    const halfWidth = el.scrollWidth / 2;
+    if (scrollPos >= halfWidth) {
+      setScrollPos(0);
+    }
+  }, [scrollPos]);
 
   const suggestions = searchTerm.length > 0
     ? allServices.filter(s => s.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -160,19 +196,12 @@ export default function HomePage() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, #344a5e 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
         <div className="max-w-6xl mx-auto px-6 pt-20 pb-24 relative">
-          <div className="max-w-2xl mx-auto text-center">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#fd7958]/[0.08] text-[#fd7958] text-xs font-medium mb-6">
-              <Zap size={12} />
-              Plateforme #1 de leads qualifiés en France
-            </div>
+          <div className="max-w-2xl mx-auto text-center">            
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight mb-4 tracking-tight">
               Des leads qualifiés
               <br />
               <span className="text-[#fd7958]">qui convertissent</span>
             </h1>
-            <p className="text-gray-400 text-base leading-relaxed mb-8 max-w-lg mx-auto">
-              Accédez à des milliers de leads vérifiés par IA, scorés et prêts à être contactés. Trouvez vos futurs clients en quelques clics.
-            </p>
 
             {/* Search Bar */}
             <div className="max-w-xl mx-auto mb-6">
@@ -236,6 +265,48 @@ export default function HomePage() {
               <span className="flex items-center gap-1"><CheckCircle2 size={12} className="text-emerald-400" /> Scoring IA</span>
               <span className="flex items-center gap-1"><CheckCircle2 size={12} className="text-emerald-400" /> Exclusivité garantie</span>
             </div>
+          </div>
+        </div>
+
+        {/* Testimonials sliding strip */}
+        <div
+          id="testimonials"
+          className="relative overflow-hidden pb-10 -mx-6"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          {/* Fade edges */}
+          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-[#f8f9fb] to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-[#f8f9fb] to-transparent z-10 pointer-events-none" />
+
+          <div
+            ref={(el) => { scrollRef.current = el; handleCarouselReset(el); }}
+            className="flex gap-4 px-6"
+            style={{ transform: `translateX(-${scrollPos}px)`, willChange: 'transform' }}
+          >
+            {/* Duplicate testimonials for seamless loop */}
+            {[...testimonials, ...testimonials].map((t, idx) => (
+              <div
+                key={`${t.name}-${idx}`}
+                className="flex-shrink-0 w-[320px] bg-white rounded-xl p-5 border border-gray-100/80 shadow-sm hover:shadow-md transition-shadow"
+              >
+                <div className="flex gap-0.5 mb-2.5">
+                  {Array.from({ length: t.rating }).map((_, i) => (
+                    <Star key={i} size={11} className="text-amber-400 fill-amber-400" />
+                  ))}
+                </div>
+                <p className="text-[13px] text-gray-600 leading-relaxed mb-4 line-clamp-3">"{t.text}"</p>
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-[#344a5e]/[0.06] flex items-center justify-center text-[10px] font-bold text-[#344a5e]">
+                    {t.name.split(' ').map(n => n[0]).join('')}
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-gray-800">{t.name}</p>
+                    <p className="text-[10px] text-gray-400">{t.role} — {t.company}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -390,40 +461,6 @@ export default function HomePage() {
               <p className="text-xs text-gray-400 leading-relaxed">{role.description}</p>
             </Link>
           ))}
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section id="testimonials" className="bg-white border-y border-gray-100/80">
-        <div className="max-w-6xl mx-auto px-6 py-16">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Ce que disent nos clients</h2>
-            <p className="text-sm text-gray-400 max-w-md mx-auto">
-              Ils nous font confiance pour développer leur business
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {testimonials.map((testimonial) => (
-              <div key={testimonial.name} className="bg-[#f8f9fb] rounded-xl p-5 border border-gray-100/60">
-                <div className="flex gap-0.5 mb-3">
-                  {Array.from({ length: testimonial.rating }).map((_, i) => (
-                    <Star key={i} size={12} className="text-amber-400 fill-amber-400" />
-                  ))}
-                </div>
-                <p className="text-sm text-gray-600 leading-relaxed mb-4">"{testimonial.text}"</p>
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-[#344a5e]/[0.06] flex items-center justify-center text-[10px] font-bold text-[#344a5e]">
-                    {testimonial.name.split(' ').map(n => n[0]).join('')}
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold text-gray-800">{testimonial.name}</p>
-                    <p className="text-[10px] text-gray-400">{testimonial.role} — {testimonial.company}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
