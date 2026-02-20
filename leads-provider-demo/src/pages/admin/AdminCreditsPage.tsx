@@ -48,14 +48,14 @@ export default function AdminCreditsPage() {
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
-            { label: 'Packs actifs', value: stats.totalPacks, icon: <Package size={18} />, color: 'text-blue-700', bg: 'bg-blue-50' },
-            { label: 'Prix moyen/crédit', value: `${stats.avgPrice} €`, icon: <DollarSign size={18} />, color: 'text-green-700', bg: 'bg-green-50' },
-            { label: 'Bonus distribués', value: stats.totalBonusGiven.toLocaleString(), icon: <Gift size={18} />, color: 'text-purple-700', bg: 'bg-purple-50' },
-            { label: 'Règles actives', value: `${stats.activeRules}/${rules.length}`, icon: <Settings size={18} />, color: 'text-gray-700', bg: 'bg-gray-50' },
+            { label: 'Packs actifs', value: stats.totalPacks, icon: <Package size={18} /> },
+            { label: 'Prix moyen/crédit', value: `${stats.avgPrice} €`, icon: <DollarSign size={18} /> },
+            { label: 'Bonus distribués', value: stats.totalBonusGiven.toLocaleString(), icon: <Gift size={18} /> },
+            { label: 'Règles actives', value: `${stats.activeRules}/${rules.length}`, icon: <Settings size={18} /> },
           ].map(stat => (
-            <div key={stat.label} className={`${stat.bg} rounded-xl p-4`}>
-              <div className={`flex items-center gap-2 mb-1 ${stat.color}`}>{stat.icon}</div>
-              <p className={`text-xl font-bold ${stat.color}`}>{stat.value}</p>
+            <div key={stat.label} className="bg-white rounded-xl p-4 border border-gray-100 shadow-sm">
+              <div className="flex items-center gap-2 mb-1 text-primary">{stat.icon}</div>
+              <p className="text-xl font-bold text-gray-900">{stat.value}</p>
               <p className="text-xs text-gray-500">{stat.label}</p>
             </div>
           ))}

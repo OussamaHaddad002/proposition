@@ -60,16 +60,16 @@ export default function AdminImportsPage() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           {[
-            { label: 'Total', value: stats.total, icon: <FileSpreadsheet size={16} />, color: 'text-gray-900', bg: 'bg-gray-50' },
-            { label: 'Terminés', value: stats.completed, icon: <CheckCircle size={16} />, color: 'text-green-700', bg: 'bg-green-50' },
-            { label: 'En traitement', value: stats.processing, icon: <RefreshCw size={16} />, color: 'text-blue-700', bg: 'bg-blue-50' },
-            { label: 'À réviser', value: stats.pendingReview, icon: <Clock size={16} />, color: 'text-yellow-700', bg: 'bg-yellow-50' },
-            { label: 'Échoués', value: stats.failed, icon: <XCircle size={16} />, color: 'text-red-700', bg: 'bg-red-50' },
-            { label: 'Total leads', value: stats.totalLeads.toLocaleString(), icon: <User size={16} />, color: 'text-primary', bg: 'bg-primary/5' },
+            { label: 'Total', value: stats.total, icon: <FileSpreadsheet size={16} /> },
+            { label: 'Terminés', value: stats.completed, icon: <CheckCircle size={16} /> },
+            { label: 'En traitement', value: stats.processing, icon: <RefreshCw size={16} /> },
+            { label: 'À réviser', value: stats.pendingReview, icon: <Clock size={16} /> },
+            { label: 'Échoués', value: stats.failed, icon: <XCircle size={16} /> },
+            { label: 'Total leads', value: stats.totalLeads.toLocaleString(), icon: <User size={16} /> },
           ].map(stat => (
-            <div key={stat.label} className={`${stat.bg} rounded-xl p-3 text-center`}>
-              <div className={`flex items-center justify-center gap-1.5 mb-1 ${stat.color}`}>{stat.icon}</div>
-              <p className={`text-lg font-bold ${stat.color}`}>{stat.value}</p>
+            <div key={stat.label} className="bg-white rounded-xl p-3 text-center border border-gray-100 shadow-sm">
+              <div className="flex items-center justify-center gap-1.5 mb-1 text-primary">{stat.icon}</div>
+              <p className="text-lg font-bold text-gray-900">{stat.value}</p>
               <p className="text-[10px] sm:text-xs text-gray-500">{stat.label}</p>
             </div>
           ))}

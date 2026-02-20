@@ -122,17 +122,17 @@ export default function AdminUsersPage() {
         {/* Stats Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
           {[
-            { label: 'Total', value: stats.total, icon: <Users size={16} />, color: 'text-gray-900', bg: 'bg-gray-50' },
-            { label: 'Actifs', value: stats.active, icon: <CheckCircle size={16} />, color: 'text-green-700', bg: 'bg-green-50' },
-            { label: 'En attente', value: stats.pending, icon: <Clock size={16} />, color: 'text-yellow-700', bg: 'bg-yellow-50' },
-            { label: 'Suspendus', value: stats.suspended, icon: <Ban size={16} />, color: 'text-red-700', bg: 'bg-red-50' },
-            { label: 'Fournisseurs', value: stats.fournisseurs, icon: <TrendingUp size={16} />, color: 'text-blue-700', bg: 'bg-blue-50' },
-            { label: 'Agents', value: stats.agents, icon: <Phone size={16} />, color: 'text-purple-700', bg: 'bg-purple-50' },
-            { label: 'Acheteurs', value: stats.acheteurs, icon: <Activity size={16} />, color: 'text-green-700', bg: 'bg-emerald-50' },
+            { label: 'Total', value: stats.total, icon: <Users size={16} /> },
+            { label: 'Actifs', value: stats.active, icon: <CheckCircle size={16} /> },
+            { label: 'En attente', value: stats.pending, icon: <Clock size={16} /> },
+            { label: 'Suspendus', value: stats.suspended, icon: <Ban size={16} /> },
+            { label: 'Fournisseurs', value: stats.fournisseurs, icon: <TrendingUp size={16} /> },
+            { label: 'Agents', value: stats.agents, icon: <Phone size={16} /> },
+            { label: 'Acheteurs', value: stats.acheteurs, icon: <Activity size={16} /> },
           ].map((stat) => (
-            <div key={stat.label} className={`${stat.bg} rounded-xl p-3 text-center`}>
-              <div className={`flex items-center justify-center gap-1.5 mb-1 ${stat.color}`}>{stat.icon}</div>
-              <p className={`text-lg sm:text-xl font-bold ${stat.color}`}>{stat.value}</p>
+            <div key={stat.label} className="bg-white rounded-xl p-3 text-center border border-gray-100 shadow-sm">
+              <div className="flex items-center justify-center gap-1.5 mb-1 text-primary">{stat.icon}</div>
+              <p className="text-lg sm:text-xl font-bold text-gray-900">{stat.value}</p>
               <p className="text-[10px] sm:text-xs text-gray-500">{stat.label}</p>
             </div>
           ))}

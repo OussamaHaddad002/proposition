@@ -57,20 +57,20 @@ export default function AdminGainsPage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-          <div className="bg-gradient-to-br from-primary to-[#1e2d3d] rounded-xl p-5 text-white">
-            <div className="flex items-center gap-2 mb-2"><DollarSign size={20} /><span className="text-sm text-white/80">Total gains</span></div>
-            <p className="text-2xl font-bold">{totalEarnings.toLocaleString('fr-FR')} €</p>
-          </div>
-          <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-5 text-white">
-            <div className="flex items-center gap-2 mb-2"><CheckCircle size={20} /><span className="text-sm text-white/80">Total payé</span></div>
-            <p className="text-2xl font-bold">{totalPaid.toLocaleString('fr-FR')} €</p>
-          </div>
-          <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-5 text-white">
-            <div className="flex items-center gap-2 mb-2"><Clock size={20} /><span className="text-sm text-white/80">En attente</span></div>
-            <p className="text-2xl font-bold">{totalPending.toLocaleString('fr-FR')} €</p>
+          <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+            <div className="flex items-center gap-2 mb-2 text-primary"><DollarSign size={20} /><span className="text-sm text-gray-500">Total gains</span></div>
+            <p className="text-2xl font-bold text-gray-900">{totalEarnings.toLocaleString('fr-FR')} €</p>
           </div>
           <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
-            <div className="flex items-center gap-2 mb-2 text-gray-500"><User size={20} /><span className="text-sm">Fournisseurs</span></div>
+            <div className="flex items-center gap-2 mb-2 text-primary"><CheckCircle size={20} /><span className="text-sm text-gray-500">Total payé</span></div>
+            <p className="text-2xl font-bold text-gray-900">{totalPaid.toLocaleString('fr-FR')} €</p>
+          </div>
+          <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+            <div className="flex items-center gap-2 mb-2 text-primary"><Clock size={20} /><span className="text-sm text-gray-500">En attente</span></div>
+            <p className="text-2xl font-bold text-gray-900">{totalPending.toLocaleString('fr-FR')} €</p>
+          </div>
+          <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+            <div className="flex items-center gap-2 mb-2 text-primary"><User size={20} /><span className="text-sm text-gray-500">Fournisseurs</span></div>
             <p className="text-2xl font-bold text-gray-900">{allGains.filter(g => g.status === 'active').length}</p>
             <p className="text-xs text-gray-400">actifs</p>
           </div>

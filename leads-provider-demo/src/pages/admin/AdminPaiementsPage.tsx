@@ -78,20 +78,20 @@ export default function AdminPaiementsPage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-          <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-5 text-white">
-            <div className="flex items-center gap-2 mb-2"><TrendingUp size={20} /><span className="text-sm text-white/80">Revenus</span></div>
-            <p className="text-2xl font-bold">{totalRevenue.toLocaleString('fr-FR')} €</p>
-          </div>
-          <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl p-5 text-white">
-            <div className="flex items-center gap-2 mb-2"><ArrowDownRight size={20} /><span className="text-sm text-white/80">Payé fournisseurs</span></div>
-            <p className="text-2xl font-bold">{totalPayouts.toLocaleString('fr-FR')} €</p>
-          </div>
-          <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-5 text-white">
-            <div className="flex items-center gap-2 mb-2"><Clock size={20} /><span className="text-sm text-white/80">En attente</span></div>
-            <p className="text-2xl font-bold">{pendingPayouts.toLocaleString('fr-FR')} €</p>
+          <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+            <div className="flex items-center gap-2 mb-2 text-primary"><TrendingUp size={20} /><span className="text-sm text-gray-500">Revenus</span></div>
+            <p className="text-2xl font-bold text-gray-900">{totalRevenue.toLocaleString('fr-FR')} €</p>
           </div>
           <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
-            <div className="flex items-center gap-2 mb-2 text-gray-500"><CreditCard size={20} /><span className="text-sm">Transactions</span></div>
+            <div className="flex items-center gap-2 mb-2 text-primary"><ArrowDownRight size={20} /><span className="text-sm text-gray-500">Payé fournisseurs</span></div>
+            <p className="text-2xl font-bold text-gray-900">{totalPayouts.toLocaleString('fr-FR')} €</p>
+          </div>
+          <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+            <div className="flex items-center gap-2 mb-2 text-primary"><Clock size={20} /><span className="text-sm text-gray-500">En attente</span></div>
+            <p className="text-2xl font-bold text-gray-900">{pendingPayouts.toLocaleString('fr-FR')} €</p>
+          </div>
+          <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+            <div className="flex items-center gap-2 mb-2 text-primary"><CreditCard size={20} /><span className="text-sm text-gray-500">Transactions</span></div>
             <p className="text-2xl font-bold text-gray-900">{allTransactions.length}</p>
             <p className="text-xs text-gray-400">ce mois</p>
           </div>

@@ -117,16 +117,16 @@ export default function AdminLeadsPage() {
         {/* Stats Overview */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           {[
-            { label: 'Total', value: stats.total, color: 'text-gray-900', bg: 'bg-gray-50' },
-            { label: 'Nouveaux', value: stats.new, color: 'text-purple-700', bg: 'bg-purple-50' },
-            { label: 'En attente', value: stats.pending, color: 'text-yellow-700', bg: 'bg-yellow-50' },
-            { label: 'Qualifiés', value: stats.qualified, color: 'text-blue-700', bg: 'bg-blue-50' },
-            { label: 'Vendus', value: stats.sold, color: 'text-green-700', bg: 'bg-green-50' },
-            { label: 'Rejetés', value: stats.rejected, color: 'text-red-700', bg: 'bg-red-50' },
+            { label: 'Total', value: stats.total },
+            { label: 'Nouveaux', value: stats.new },
+            { label: 'En attente', value: stats.pending },
+            { label: 'Qualifiés', value: stats.qualified },
+            { label: 'Vendus', value: stats.sold },
+            { label: 'Rejetés', value: stats.rejected },
           ].map((stat) => (
-            <div key={stat.label} className={`${stat.bg} rounded-xl p-3 sm:p-4 text-center`}>
+            <div key={stat.label} className="bg-white rounded-xl p-3 sm:p-4 text-center border border-gray-100 shadow-sm">
               <p className="text-xs text-gray-500 mb-1">{stat.label}</p>
-              <p className={`text-lg sm:text-2xl font-bold ${stat.color}`}>{stat.value}</p>
+              <p className="text-lg sm:text-2xl font-bold text-gray-900">{stat.value}</p>
             </div>
           ))}
         </div>

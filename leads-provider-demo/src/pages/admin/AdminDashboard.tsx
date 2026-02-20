@@ -134,7 +134,7 @@ export default function AdminDashboard() {
                 value="48,750€"
                 change={18}
                 icon={<DollarSign size={24} />}
-                color="success"
+                color="primary"
               />
               <StatCard
                 title="Utilisateurs actifs"
@@ -148,14 +148,14 @@ export default function AdminDashboard() {
                 value={mockLeads.length * 10}
                 change={25}
                 icon={<TrendingUp size={24} />}
-                color="accent"
+                color="primary"
               />
               <StatCard
                 title="Taux de satisfaction"
                 value="94.5%"
                 change={3}
                 icon={<CheckCircle2 size={24} />}
-                color="info"
+                color="primary"
               />
             </div>
 
@@ -321,43 +321,43 @@ export default function AdminDashboard() {
         {selectedTab === 'ai' && (
           <>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-gradient-to-br from-primary to-primary-dark rounded-xl p-6 text-white">
+              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-3 bg-white/20 rounded-xl">
+                  <div className="p-3 bg-primary/10 text-primary rounded-xl">
                     <Brain size={24} />
                   </div>
                   <div>
-                    <p className="text-white/70 text-sm">Précision du modèle</p>
-                    <p className="text-3xl font-bold">89.2%</p>
+                    <p className="text-sm text-gray-500">Précision du modèle</p>
+                    <p className="text-3xl font-bold text-gray-900">89.2%</p>
                   </div>
                 </div>
-                <div className="w-full bg-white/20 rounded-full h-2">
-                  <div className="bg-white rounded-full h-2" style={{ width: '89.2%' }} />
+                <div className="w-full bg-gray-100 rounded-full h-2">
+                  <div className="bg-primary rounded-full h-2" style={{ width: '89.2%' }} />
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-accent to-accent-dark rounded-xl p-6 text-white">
+              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-3 bg-white/20 rounded-xl">
+                  <div className="p-3 bg-primary/10 text-primary rounded-xl">
                     <Zap size={24} />
                   </div>
                   <div>
-                    <p className="text-white/70 text-sm">Prédictions/jour</p>
-                    <p className="text-3xl font-bold">848</p>
+                    <p className="text-sm text-gray-500">Prédictions/jour</p>
+                    <p className="text-3xl font-bold text-gray-900">848</p>
                   </div>
                 </div>
-                <p className="text-white/70 text-sm">+15% vs semaine dernière</p>
+                <p className="text-sm text-gray-500">+15% vs semaine dernière</p>
               </div>
-              <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white">
+              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="p-3 bg-white/20 rounded-xl">
+                  <div className="p-3 bg-primary/10 text-primary rounded-xl">
                     <Gauge size={24} />
                   </div>
                   <div>
-                    <p className="text-white/70 text-sm">Temps de réponse</p>
-                    <p className="text-3xl font-bold">230ms</p>
+                    <p className="text-sm text-gray-500">Temps de réponse</p>
+                    <p className="text-3xl font-bold text-gray-900">230ms</p>
                   </div>
                 </div>
-                <p className="text-white/70 text-sm">SLA respecté: 99.5%</p>
+                <p className="text-sm text-gray-500">SLA respecté: 99.5%</p>
               </div>
             </div>
 
