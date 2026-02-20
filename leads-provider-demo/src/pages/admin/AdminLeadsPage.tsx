@@ -105,7 +105,7 @@ export default function AdminLeadsPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Tous les Leads 📊</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Tous les Leads</h1>
             <p className="text-sm sm:text-base text-gray-500">Supervision et gestion de tous les leads de la plateforme</p>
           </div>
           <button className="flex items-center justify-center gap-2 px-4 py-2 bg-primary text-white rounded-xl font-medium hover:bg-primary-dark transition-colors text-sm">

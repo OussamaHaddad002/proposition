@@ -122,7 +122,7 @@ export const dashboardTourSteps: Record<UserRole, TourStep[]> = {
     },
     {
       target: '[data-tour="user-management"]',
-      title: 'Gestion utilisateurs 👥',
+      title: 'Gestion utilisateurs',
       content: 'Validez les nouveaux comptes, gérez les permissions, et surveillez l\'activité des utilisateurs.',
       placement: 'top',
     },

@@ -101,7 +101,7 @@ export default function AdminUsersPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Utilisateurs 👥</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Utilisateurs</h1>
             <p className="text-sm sm:text-base text-gray-500">Gérez tous les comptes de la plateforme</p>
           </div>
           <div className="flex gap-2">

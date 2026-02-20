@@ -33,7 +33,7 @@ export default function SettingsPage({ userRole = 'acheteur' }: SettingsPageProp
       <div className="space-y-6">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Paramètres ⚙️</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Paramètres </h1>
           <p className="text-sm sm:text-base text-gray-500">Gérez votre compte et vos préférences</p>
         </div>
 
