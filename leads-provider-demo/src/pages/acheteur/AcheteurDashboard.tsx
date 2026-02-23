@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { ShoppingCart, TrendingUp, CreditCard, ArrowRight, Target, Clock, CheckCircle2, AlertCircle, Sparkles } from 'lucide-react';
 import AcheteurLayout from '../../components/AcheteurLayout';
 import { useApi } from '../../hooks/useApi';
-import { getAcheteur, getLeads, getSectorDistribution } from '../../services/api';
+import { getMe, getLeads, getSectorDistribution } from '../../services/api';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import TourGuide from '../../components/TourGuide';
 import { dashboardTourSteps } from '../../data/tourSteps';
@@ -19,7 +19,7 @@ export default function AcheteurDashboard() {
   }, [searchParams]);
 
   // Fetch data from API
-  const { data: mockAcheteur } = useApi(getAcheteur, []);
+  const { data: mockAcheteur } = useApi(() => getMe('acheteur'), []);
   const { data: leadsData } = useApi(getLeads, []);
   const mockLeads = leadsData ?? [];
   const { data: sectorData } = useApi(getSectorDistribution, []);

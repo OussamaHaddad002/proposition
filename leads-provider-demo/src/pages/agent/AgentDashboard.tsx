@@ -4,7 +4,7 @@ import { Phone, PhoneCall, PhoneOff, Clock, CheckCircle, XCircle, RotateCcw, Hea
 import Layout from '../../components/Layout';
 import StatCard from '../../components/StatCard';
 import { useApi } from '../../hooks/useApi';
-import { getAgent, getLeads } from '../../services/api';
+import { getMe, getLeads } from '../../services/api';
 import type { Lead } from '../../types';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import TourGuide from '../../components/TourGuide';
@@ -26,7 +26,7 @@ export default function AgentDashboard() {
   }, [searchParams]);
 
   // Fetch data from API
-  const { data: mockAgent } = useApi(getAgent, []);
+  const { data: mockAgent } = useApi(() => getMe('agent'), []);
   const { data: leadsData } = useApi(getLeads, []);
   const mockLeads = leadsData ?? [];
 

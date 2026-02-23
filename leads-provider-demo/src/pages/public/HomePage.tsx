@@ -177,13 +177,13 @@ export default function HomePage() {
 
           <div className="flex items-center gap-2">
             <Link
-              to="/login"
+              to="/signin"
               className="px-4 py-1.5 text-sm font-medium text-gray-600 hover:text-gray-800 transition-colors"
             >
               Connexion
             </Link>
             <Link
-              to="/inscription"
+              to="/signup"
               className="px-4 py-1.5 bg-[#fd7958] text-white rounded-lg text-sm font-medium hover:bg-[#e86847] transition-colors"
             >
               Rejoindre
@@ -325,7 +325,7 @@ export default function HomePage() {
               </div>
             </div>
             <Link
-              to="/inscription?role=fournisseur"
+              to="/signup/fournisseur"
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-[#344a5e] rounded-lg text-sm font-semibold hover:bg-gray-100 transition-colors shrink-0"
             >
               Devenir fournisseur
@@ -429,21 +429,21 @@ export default function HomePage() {
               title: 'Fournisseurs',
               description: 'Vendez vos leads à un réseau qualifié d\'acheteurs. Maximisez la valeur de vos contacts.',
               color: 'bg-blue-50 text-blue-500',
-              link: '/inscription',
+              link: '/signup/fournisseur',
             },
             {
               icon: Phone,
               title: 'Agents',
               description: 'Qualifiez les leads par téléphone et gagnez des commissions sur chaque appel.',
               color: 'bg-emerald-50 text-emerald-500',
-              link: '/inscription',
+              link: '/signup',
             },
             {
               icon: ShoppingCart,
               title: 'Acheteurs',
               description: 'Accédez à des leads exclusifs, vérifiés et scorés par IA pour booster vos ventes.',
               color: 'bg-violet-50 text-violet-500',
-              link: '/inscription',
+              link: '/signup',
             },
           ].map((role) => (
             <Link
@@ -479,13 +479,13 @@ export default function HomePage() {
             </p>
             <div className="flex items-center justify-center gap-3">
               <Link
-                to="/inscription"
+                to="/signup"
                 className="px-6 py-2.5 bg-[#fd7958] text-white rounded-lg text-sm font-medium hover:bg-[#e86847] transition-colors"
               >
                 Créer un compte gratuit
               </Link>
               <Link
-                to="/login"
+                to="/signin"
                 className="px-6 py-2.5 border border-gray-200 text-gray-600 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
               >
                 Se connecter
@@ -509,7 +509,7 @@ export default function HomePage() {
               <a href="#services" className="text-xs text-gray-400 hover:text-gray-600 transition-colors">Services</a>
               <a href="#how-it-works" className="text-xs text-gray-400 hover:text-gray-600 transition-colors">Fonctionnement</a>
               <a href="#testimonials" className="text-xs text-gray-400 hover:text-gray-600 transition-colors">Témoignages</a>
-              <Link to="/login" className="text-xs text-gray-400 hover:text-gray-600 transition-colors">Connexion</Link>
+              <Link to="/signin" className="text-xs text-gray-400 hover:text-gray-600 transition-colors">Connexion</Link>
             </div>
             <p className="text-[10px] text-gray-300">© 2026 Leads Provider. Tous droits réservés.</p>
           </div>

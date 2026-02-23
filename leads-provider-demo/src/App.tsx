@@ -4,8 +4,9 @@ import './index.css';
 
 // Pages — Public
 import HomePage from './pages/public/HomePage';
-import LoginPage from './pages/public/LoginPage';
-import InscriptionPage from './pages/public/InscriptionPage';
+import SigninPage from './pages/public/SigninPage';
+import SignupAcheteurPage from './pages/public/SignupAcheteurPage';
+import SignupFournisseurPage from './pages/public/SignupFournisseurPage';
 import PublicCataloguePage from './pages/public/PublicCataloguePage';
 import ForgotPasswordPage from './pages/public/ForgotPasswordPage';
 
@@ -84,12 +85,13 @@ function App() {
         <Routes>
           {/* Public Pages */}
           <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signin" element={<SigninPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/explore" element={<PublicCataloguePage />} />
           
           {/* Inscription & Onboarding */}
-          <Route path="/inscription" element={<InscriptionPage />} />
+          <Route path="/signup" element={<SignupAcheteurPage />} />
+          <Route path="/signup/fournisseur" element={<SignupFournisseurPage />} />
           
           
           {/* Fournisseur Dashboard */}

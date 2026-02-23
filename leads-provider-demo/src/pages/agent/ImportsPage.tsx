@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FileSpreadsheet, Search, Eye, Clock, CheckCircle, XCircle, AlertTriangle, Download, ChevronLeft, ChevronRight, Calendar, User } from 'lucide-react';
 import Layout from '../../components/Layout';
 import { useApi } from '../../hooks/useApi';
-import { getAgent, getAgentImports } from '../../services/api';
+import { getMe, getAgentImports } from '../../services/api';
 import type { AgentImport } from '../../types';
 
 export default function AgentImportsPage() {
@@ -12,7 +12,7 @@ export default function AgentImportsPage() {
   const [selectedImport, setSelectedImport] = useState<AgentImport | null>(null);
   const perPage = 6;
 
-  const { data: mockAgent } = useApi(getAgent, []);
+  const { data: mockAgent } = useApi(() => getMe('agent'), []);
   const { data: importsData } = useApi(getAgentImports, []);
   const allImports = importsData ?? [];
 

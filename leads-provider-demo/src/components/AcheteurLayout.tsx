@@ -14,7 +14,7 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import { useApi } from '../hooks/useApi';
-import { getAcheteur } from '../services/api';
+import { getMe } from '../services/api';
 
 interface AcheteurLayoutProps {
   children: React.ReactNode;
@@ -35,7 +35,7 @@ export default function AcheteurLayout({ children }: AcheteurLayoutProps) {
   const notifRef = useRef<HTMLDivElement>(null);
 
   // Fetch acheteur data from API
-  const { data: mockAcheteur } = useApi(getAcheteur, []);
+  const { data: mockAcheteur } = useApi(() => getMe('acheteur'), []);
   const userName = mockAcheteur ? `${mockAcheteur.firstName} ${mockAcheteur.lastName}` : 'Chargement...';
 
   const notifications = [

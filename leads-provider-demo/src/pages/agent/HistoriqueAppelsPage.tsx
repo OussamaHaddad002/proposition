@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Phone, PhoneMissed, Clock, CheckCircle, XCircle, RotateCcw, Play, Download, User, Building2 } from 'lucide-react';
 import Layout from '../../components/Layout';
 import { useApi } from '../../hooks/useApi';
-import { getAgent, getLeads } from '../../services/api';
+import { getMe, getLeads } from '../../services/api';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 
 export default function HistoriqueAppelsPage() {
@@ -10,7 +10,7 @@ export default function HistoriqueAppelsPage() {
   const [dateRange, setDateRange] = useState('7d');
 
   // Fetch data from API
-  const { data: mockAgent } = useApi(getAgent, []);
+  const { data: mockAgent } = useApi(() => getMe('agent'), []);
   const { data: leadsData } = useApi(getLeads, []);
   const mockLeads = leadsData ?? [];
 

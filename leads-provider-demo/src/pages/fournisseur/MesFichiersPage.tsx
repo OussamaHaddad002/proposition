@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FileSpreadsheet, Search, Upload, Eye, Clock, CheckCircle, XCircle, AlertTriangle, ChevronLeft, ChevronRight, User, Calendar, Hash, ArrowLeft, Copy, Plus } from 'lucide-react';
 import Layout from '../../components/Layout';
 import { useApi } from '../../hooks/useApi';
-import { getFournisseur, getLeads } from '../../services/api';
+import { getMe, getLeads } from '../../services/api';
 import type { Lead } from '../../types';
 
 type FileStatus = 'traité' | 'en_cours' | 'erreur';
@@ -29,7 +29,7 @@ export default function MesFichiersPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const perPage = 6;
 
-  const { data: mockFournisseur } = useApi(getFournisseur, []);
+  const { data: mockFournisseur } = useApi(() => getMe('fournisseur'), []);
   const { data: leadsData } = useApi(getLeads, []);
   const allLeads = leadsData ?? [];
 

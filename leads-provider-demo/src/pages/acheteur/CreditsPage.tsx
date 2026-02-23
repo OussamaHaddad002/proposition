@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { CreditCard, Plus, History, TrendingUp, Gift, Zap, Star, Check, Download, ChevronRight, Wallet } from 'lucide-react';
 import AcheteurLayout from '../../components/AcheteurLayout';
 import { useApi } from '../../hooks/useApi';
-import { getAcheteur, getCreditPacks } from '../../services/api';
+import { getMe, getCreditPacks } from '../../services/api';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import TourGuide from '../../components/TourGuide';
 import { creditsTourSteps } from '../../data/tourSteps';
@@ -20,7 +20,7 @@ export default function CreditsPage() {
   }, [searchParams]);
 
   // Fetch data from API
-  const { data: mockAcheteur } = useApi(getAcheteur, []);
+  const { data: mockAcheteur } = useApi(() => getMe('acheteur'), []);
   const { data: packsData } = useApi(getCreditPacks, []);
   const creditPacks = packsData ?? [];
 

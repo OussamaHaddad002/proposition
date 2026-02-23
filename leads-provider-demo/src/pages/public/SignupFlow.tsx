@@ -6,8 +6,8 @@ import {
 } from 'lucide-react';
 import type { UserRole } from '../../types';
 
-// Steps: 1=Role, 2=Infos, 3=Entreprise, 4=Préférences (acheteur), 5=Vérification email, 6=Terminé
-type Step = 1 | 2 | 3 | 4 | 5 | 6;
+// Steps: 1=Infos, 2=Entreprise, 3=Préférences (acheteur only), 4=Vérification, 5=Terminé
+type Step = 1 | 2 | 3 | 4 | 5;
 
 const sectors = [
   'Technologie', 'Finance', 'Santé', 'Immobilier', 'Énergie',
@@ -20,14 +20,19 @@ const regions = [
   'Bretagne', 'Normandie', 'Pays de la Loire'
 ];
 
-export default function InscriptionPage() {
+interface SignupFlowProps {
+  role: Extract<UserRole, 'acheteur' | 'fournisseur'>;
+  title: string;
+  subtitle: string;
+}
+
+export default function SignupFlow({ role, title, subtitle }: SignupFlowProps) {
   const navigate = useNavigate();
   const [step, setStep] = useState<Step>(1);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
   // Form state
-  const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
@@ -49,33 +54,6 @@ export default function InscriptionPage() {
   });
   const [verificationCode, setVerificationCode] = useState(['', '', '', '', '', '']);
   const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const roles: { role: UserRole; label: string; description: string; icon: React.ReactNode; color: string; features: string[] }[] = [
-    {
-      role: 'fournisseur',
-      label: 'Fournisseur',
-      description: 'Vendez vos leads qualifiés et gagnez de l\'argent',
-      icon: <Users size={28} />,
-      color: 'from-blue-500 to-blue-600',
-      features: ['Upload de fichiers CSV', 'Suivi des ventes en temps réel', 'Paiements automatiques']
-    },
-    {
-      role: 'acheteur',
-      label: 'Acheteur',
-      description: 'Achetez des leads exclusifs et vérifiés',
-      icon: <ShoppingCart size={28} />,
-      color: 'from-purple-500 to-purple-600',
-      features: ['Catalogue de leads qualifiés', 'Filtres avancés & matching IA', 'Crédits flexibles']
-    },
-    {
-      role: 'agent',
-      label: 'Agent',
-      description: 'Qualifiez les leads par téléphone',
-      icon: <Phone size={28} />,
-      color: 'from-green-500 to-green-600',
-      features: ['Interface d\'appel intégrée', 'Enregistrement automatique', 'Tableau de performance']
-    },
-  ];
 
   const handleChange = (field: string, value: string | boolean) => {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -105,11 +83,7 @@ export default function InscriptionPage() {
   const validateStep = (currentStep: Step): boolean => {
     const newErrors: Record<string, string> = {};
 
-    if (currentStep === 1 && !selectedRole) {
-      return false;
-    }
-
-    if (currentStep === 2) {
+    if (currentStep === 1) {
       if (!form.firstName.trim()) newErrors.firstName = 'Prénom requis';
       if (!form.lastName.trim()) newErrors.lastName = 'Nom requis';
       if (!form.email.trim()) newErrors.email = 'Email requis';
@@ -120,7 +94,7 @@ export default function InscriptionPage() {
       if (form.password !== form.confirmPassword) newErrors.confirmPassword = 'Les mots de passe ne correspondent pas';
     }
 
-    if (currentStep === 3) {
+    if (currentStep === 2) {
       if (!form.company.trim()) newErrors.company = 'Entreprise requise';
       if (!form.city.trim()) newErrors.city = 'Ville requise';
     }
@@ -131,9 +105,9 @@ export default function InscriptionPage() {
 
   const nextStep = () => {
     if (validateStep(step)) {
-      // Skip step 4 (preferences) for non-acheteur roles
-      if (step === 3 && selectedRole !== 'acheteur') {
-        setStep(5);
+      // Skip step 3 (preferences) for fournisseur
+      if (step === 2 && role !== 'acheteur') {
+        setStep(4);
       } else {
         setStep((step + 1) as Step);
       }
@@ -141,8 +115,8 @@ export default function InscriptionPage() {
   };
 
   const prevStep = () => {
-    if (step === 5 && selectedRole !== 'acheteur') {
-      setStep(3);
+    if (step === 4 && role !== 'acheteur') {
+      setStep(2);
     } else {
       setStep((step - 1) as Step);
     }
@@ -153,7 +127,6 @@ export default function InscriptionPage() {
       const newCode = [...verificationCode];
       newCode[index] = value;
       setVerificationCode(newCode);
-      // Auto-focus next input
       if (value && index < 5) {
         const nextInput = document.getElementById(`code-${index + 1}`);
         nextInput?.focus();
@@ -162,18 +135,19 @@ export default function InscriptionPage() {
   };
 
   const handleVerifyAndFinish = () => {
-    setStep(6);
+    setStep(5);
   };
 
   const handleGoToDashboard = () => {
-    if (selectedRole) {
-      // Redirect to catalogue with interactive tour for first-time users
-      navigate('/catalogue?tour=true');
-    }
+    navigate('/catalogue?tour=true');
   };
 
-  const totalSteps = selectedRole === 'acheteur' ? 5 : 4;
-  const displayStep = step === 6 ? totalSteps : (step > 4 && selectedRole !== 'acheteur') ? step - 1 : step;
+  const totalSteps = role === 'acheteur' ? 4 : 3;
+  const displayStep = (() => {
+    if (step === 5) return totalSteps;
+    if (role !== 'acheteur' && step >= 4) return step - 1;
+    return step;
+  })();
 
   const getPasswordStrength = (password: string) => {
     let strength = 0;
@@ -189,6 +163,11 @@ export default function InscriptionPage() {
   const strengthColors = ['bg-red-400', 'bg-orange-400', 'bg-yellow-400', 'bg-lime-400', 'bg-green-500'];
   const strengthLabels = ['Très faible', 'Faible', 'Moyen', 'Fort', 'Très fort'];
 
+  // Left-panel progress labels
+  const progressLabels = role === 'acheteur'
+    ? ['Informations personnelles', 'Entreprise', 'Préférences', 'Vérification']
+    : ['Informations personnelles', 'Entreprise', 'Vérification'];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary to-primary-dark flex">
       {/* Left Panel - Branding */}
@@ -201,16 +180,16 @@ export default function InscriptionPage() {
 
         <div className="max-w-lg">
           <h1 className="text-4xl font-bold text-white mb-6">
-            Rejoignez la plateforme <span className="text-accent">#1</span> de leads qualifiés
+            {title}
           </h1>
           <p className="text-white/70 text-lg mb-8">
-            Créez votre compte en quelques minutes et accédez immédiatement à notre marketplace de leads vérifiés.
+            {subtitle}
           </p>
 
           {/* Progress indicators */}
-          {step > 1 && step < 6 && (
+          {step < 5 && (
             <div className="space-y-3">
-              {['Choix du profil', 'Informations personnelles', 'Entreprise', ...(selectedRole === 'acheteur' ? ['Préférences'] : []), 'Vérification'].map((label, i) => {
+              {progressLabels.map((label, i) => {
                 const stepNum = i + 1;
                 const isCompleted = displayStep > stepNum;
                 const isCurrent = displayStep === stepNum;
@@ -247,68 +226,13 @@ export default function InscriptionPage() {
             <Link to="/"><img src="/logo.png" alt="Leads Provider" className="h-10" /></Link>
           </div>
 
-          {/* ===================== STEP 1: Role Selection ===================== */}
+          {/* ===================== STEP 1: Personal Info ===================== */}
           {step === 1 && (
             <div>
-              <div className="text-center mb-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Créez votre compte</h2>
-                <p className="text-gray-500">Choisissez votre profil pour commencer</p>
-              </div>
-
-              <div className="space-y-4">
-                {roles.map((r) => (
-                  <button
-                    key={r.role}
-                    onClick={() => setSelectedRole(r.role)}
-                    className={`w-full text-left p-5 rounded-xl border-2 transition-all hover:shadow-md ${
-                      selectedRole === r.role
-                        ? 'border-accent bg-accent/5 shadow-md'
-                        : 'border-gray-200 hover:border-accent/40'
-                    }`}
-                  >
-                    <div className="flex items-start gap-4">
-                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${r.color} flex items-center justify-center text-white shrink-0`}>
-                        {r.icon}
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <h3 className="font-bold text-gray-900">{r.label}</h3>
-                          {selectedRole === r.role && (
-                            <CheckCircle2 size={20} className="text-accent" />
-                          )}
-                        </div>
-                        <p className="text-sm text-gray-500 mt-1">{r.description}</p>
-                        <div className="flex flex-wrap gap-2 mt-3">
-                          {r.features.map((f) => (
-                            <span key={f} className="inline-flex items-center gap-1 text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                              <Check size={10} className="text-green-500" /> {f}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-                ))}
-              </div>
-
-              <button
-                onClick={nextStep}
-                disabled={!selectedRole}
-                className="w-full mt-8 py-3 bg-accent text-white rounded-xl font-semibold hover:bg-accent-dark transition-colors flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <span>Continuer</span>
-                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-              </button>
-            </div>
-          )}
-
-          {/* ===================== STEP 2: Personal Info ===================== */}
-          {step === 2 && (
-            <div>
               <div className="mb-8">
-                <button onClick={prevStep} className="flex items-center gap-1 text-gray-400 hover:text-gray-600 mb-4 text-sm">
-                  <ArrowLeft size={16} /> Retour
-                </button>
+                <Link to="/" className="flex items-center gap-1 text-gray-400 hover:text-gray-600 mb-4 text-sm">
+                  <ArrowLeft size={16} /> Retour à l'accueil
+                </Link>
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">Informations personnelles</h2>
                 <p className="text-gray-500">Renseignez vos coordonnées</p>
               </div>
@@ -440,8 +364,8 @@ export default function InscriptionPage() {
             </div>
           )}
 
-          {/* ===================== STEP 3: Company Info ===================== */}
-          {step === 3 && (
+          {/* ===================== STEP 2: Company Info ===================== */}
+          {step === 2 && (
             <div>
               <div className="mb-8">
                 <button onClick={prevStep} className="flex items-center gap-1 text-gray-400 hover:text-gray-600 mb-4 text-sm">
@@ -562,14 +486,14 @@ export default function InscriptionPage() {
                 disabled={!form.acceptTerms}
                 className="w-full mt-8 py-3 bg-accent text-white rounded-xl font-semibold hover:bg-accent-dark transition-colors flex items-center justify-center gap-2 group disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span>{selectedRole === 'acheteur' ? 'Continuer' : 'Vérifier mon email'}</span>
+                <span>{role === 'acheteur' ? 'Continuer' : 'Vérifier mon email'}</span>
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
           )}
 
-          {/* ===================== STEP 4: Preferences (Acheteur only) ===================== */}
-          {step === 4 && selectedRole === 'acheteur' && (
+          {/* ===================== STEP 3: Preferences (Acheteur only) ===================== */}
+          {step === 3 && role === 'acheteur' && (
             <div>
               <div className="mb-8">
                 <button onClick={prevStep} className="flex items-center gap-1 text-gray-400 hover:text-gray-600 mb-4 text-sm">
@@ -688,8 +612,8 @@ export default function InscriptionPage() {
             </div>
           )}
 
-          {/* ===================== STEP 5: Email Verification ===================== */}
-          {step === 5 && (
+          {/* ===================== STEP 4: Email Verification ===================== */}
+          {step === 4 && (
             <div>
               <div className="mb-8">
                 <button onClick={prevStep} className="flex items-center gap-1 text-gray-400 hover:text-gray-600 mb-4 text-sm">
@@ -700,9 +624,7 @@ export default function InscriptionPage() {
                     <Mail size={32} className="text-accent" />
                   </div>
                   <h2 className="text-2xl font-bold text-gray-900 mb-2">Vérifiez votre email</h2>
-                  <p className="text-gray-500">
-                    Un code de vérification a été envoyé à
-                  </p>
+                  <p className="text-gray-500">Un code de vérification a été envoyé à</p>
                   <p className="font-semibold text-gray-900 mt-1">{form.email || 'votre@email.fr'}</p>
                 </div>
               </div>
@@ -753,29 +675,28 @@ export default function InscriptionPage() {
             </div>
           )}
 
-          {/* ===================== STEP 6: Success ===================== */}
-          {step === 6 && (
+          {/* ===================== STEP 5: Success ===================== */}
+          {step === 5 && (
             <div className="text-center py-6">
               <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
                 <CheckCircle2 size={40} className="text-green-500" />
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-3">
-                Bienvenue chez Leads Provider ! 🎉
+                Bienvenue chez Leads Provider !
               </h2>
               <p className="text-gray-500 mb-2">
-                Votre compte <span className="font-semibold text-accent capitalize">{selectedRole}</span> a été créé avec succès.
+                Votre compte <span className="font-semibold text-accent capitalize">{role}</span> a été créé avec succès.
               </p>
               <p className="text-gray-400 text-sm mb-8">
-                {selectedRole === 'acheteur' && 'Vous recevez 10 crédits offerts pour explorer le catalogue.'}
-                {selectedRole === 'fournisseur' && 'Vous pouvez dès maintenant uploader vos premiers leads.'}
-                {selectedRole === 'agent' && 'Votre accès à l\'interface de qualification est prêt.'}
+                {role === 'acheteur' && 'Vous recevez 10 crédits offerts pour explorer le catalogue.'}
+                {role === 'fournisseur' && 'Vous pouvez dès maintenant uploader vos premiers leads.'}
               </p>
 
               {/* Welcome perks */}
               <div className="bg-gray-50 rounded-xl p-5 mb-8 text-left">
                 <h3 className="font-semibold text-gray-900 mb-3">Ce qui vous attend :</h3>
                 <div className="space-y-3">
-                  {selectedRole === 'acheteur' && (
+                  {role === 'acheteur' && (
                     <>
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 bg-accent/10 rounded-lg flex items-center justify-center"><ShoppingCart size={16} className="text-accent" /></div>
@@ -791,7 +712,7 @@ export default function InscriptionPage() {
                       </div>
                     </>
                   )}
-                  {selectedRole === 'fournisseur' && (
+                  {role === 'fournisseur' && (
                     <>
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center"><Users size={16} className="text-blue-600" /></div>
@@ -804,22 +725,6 @@ export default function InscriptionPage() {
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center"><CheckCircle2 size={16} className="text-green-600" /></div>
                         <div><p className="text-sm font-medium text-gray-900">Paiements automatiques et sécurisés</p></div>
-                      </div>
-                    </>
-                  )}
-                  {selectedRole === 'agent' && (
-                    <>
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center"><Phone size={16} className="text-green-600" /></div>
-                        <div><p className="text-sm font-medium text-gray-900">Interface d'appel intégrée avec CTI</p></div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-accent/10 rounded-lg flex items-center justify-center"><ShoppingCart size={16} className="text-accent" /></div>
-                        <div><p className="text-sm font-medium text-gray-900">Enregistrement automatique des appels</p></div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center"><Shield size={16} className="text-purple-600" /></div>
-                        <div><p className="text-sm font-medium text-gray-900">Tableau de performance en temps réel</p></div>
                       </div>
                     </>
                   )}
@@ -837,10 +742,10 @@ export default function InscriptionPage() {
           )}
 
           {/* Footer - Back to login */}
-          {step < 6 && (
+          {step < 5 && (
             <p className="text-center text-sm text-gray-500 mt-6">
               Déjà un compte ?{' '}
-              <Link to="/" className="text-accent font-medium hover:underline">
+              <Link to="/signin" className="text-accent font-medium hover:underline">
                 Se connecter
               </Link>
             </p>

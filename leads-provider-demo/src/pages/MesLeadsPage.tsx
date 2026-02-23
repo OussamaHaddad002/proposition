@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FileSpreadsheet, Upload, CheckCircle, Clock, Eye, Trash2, Download, TrendingUp, DollarSign, X, Phone, Mail, Building2, MapPin, Globe, Calendar, Headphones, Play, Pause, Mic, XCircle } from 'lucide-react';
 import Layout from '../components/Layout';
 import { useApi } from '../hooks/useApi';
-import { getFournisseur, getLeads } from '../services/api';
+import { getMe, getLeads } from '../services/api';
 import type { Lead } from '../types';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
@@ -12,7 +12,7 @@ export default function MesLeadsPage() {
   const [isPlaying, setIsPlaying] = useState(false);
 
   // Fetch data from API
-  const { data: mockFournisseur } = useApi(getFournisseur, []);
+  const { data: mockFournisseur } = useApi(() => getMe('fournisseur'), []);
   const { data: leadsData } = useApi(getLeads, []);
   const mockLeads = leadsData ?? [];
 

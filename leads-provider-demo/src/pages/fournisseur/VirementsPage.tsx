@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Download, CheckCircle, Clock, XCircle, Eye, ChevronLeft, ChevronRight, TrendingUp, Wallet, ArrowDownRight, FileText } from 'lucide-react';
 import Layout from '../../components/Layout';
 import { useApi } from '../../hooks/useApi';
-import { getFournisseur, getVirements, getMonthlyVirements } from '../../services/api';
+import { getMe, getVirements, getMonthlyVirements } from '../../services/api';
 import type { Virement } from '../../types';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -12,7 +12,7 @@ export default function VirementsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const perPage = 6;
 
-  const { data: mockFournisseur } = useApi(getFournisseur, []);
+  const { data: mockFournisseur } = useApi(() => getMe('fournisseur'), []);
   const { data: virementsData } = useApi(getVirements, []);
   const { data: monthlyAmountsData } = useApi(getMonthlyVirements, []);
   const allVirements = virementsData ?? [];

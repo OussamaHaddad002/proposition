@@ -1,5 +1,16 @@
 // Types pour la plateforme Leads Provider
 
+// ─── Auth ────────────────────────────────────────────────────────────
+export interface UserProfile {
+  _id: string;
+  username: string;
+  displayName: string;
+  email: string;
+  avatarUrl: string | null;
+  bio: string | null;
+  phone: string | null;
+}
+
 export interface Lead {
   id: string;
   firstName: string;

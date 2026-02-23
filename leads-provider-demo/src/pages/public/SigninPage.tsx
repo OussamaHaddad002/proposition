@@ -4,7 +4,7 @@ import { Mail, Lock, Eye, EyeOff, ArrowRight, Users, Phone, ShoppingCart, Shield
 import type { UserRole } from '../../types';
 import { useAuth } from '../../App';
 
-export default function LoginPage() {
+export default function SigninPage() {
   const navigate = useNavigate();
   const { setRole } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
@@ -175,7 +175,7 @@ export default function LoginPage() {
 
               {/* Footer links */}
               <div className="flex items-center justify-between mt-5 text-xs text-gray-400">
-                <Link to="/inscription" className="hover:text-[#fd7958] transition-colors">
+                <Link to="/signup" className="hover:text-[#fd7958] transition-colors">
                   Créer un compte
                 </Link>
                 <Link to="/forgot-password" className="hover:text-[#fd7958] transition-colors">

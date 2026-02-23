@@ -4,7 +4,7 @@ import { Upload, Users, Euro, FileSpreadsheet, CheckCircle, XCircle, Clock, Down
 import Layout from '../../components/Layout';
 import StatCard from '../../components/StatCard';
 import { useApi } from '../../hooks/useApi';
-import { getFournisseur, getMonthlyStats } from '../../services/api';
+import { getMe, getMonthlyStats } from '../../services/api';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import TourGuide from '../../components/TourGuide';
 import { dashboardTourSteps } from '../../data/tourSteps';
@@ -21,7 +21,7 @@ export default function FournisseurDashboard() {
   }, [searchParams]);
 
   // Fetch data from API
-  const { data: mockFournisseur } = useApi(getFournisseur, []);
+  const { data: mockFournisseur } = useApi(() => getMe('fournisseur'), []);
   const { data: monthlyStatsData } = useApi(getMonthlyStats, []);
   const monthlyStats = monthlyStatsData ?? [];
 

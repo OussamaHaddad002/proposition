@@ -134,7 +134,7 @@ export default function ForgotPasswordPage() {
           {step === 'email' && (
             <div className="space-y-6">
               <div>
-                <Link to="/login" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors mb-4">
+                <Link to="/signin" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors mb-4">
                   <ArrowLeft size={16} /> Retour à la connexion
                 </Link>
                 <h2 className="text-2xl font-bold text-gray-900">Mot de passe oublié ?</h2>
@@ -283,7 +283,7 @@ export default function ForgotPasswordPage() {
                 <p className="text-gray-500 mt-2">Votre mot de passe a été modifié avec succès. Vous pouvez maintenant vous connecter.</p>
               </div>
               <Link
-                to="/login"
+                to="/signin"
                 className="inline-flex items-center justify-center w-full py-3 bg-[#fd7958] text-white rounded-xl font-semibold hover:bg-[#e5684a] transition-colors"
               >
                 Se connecter

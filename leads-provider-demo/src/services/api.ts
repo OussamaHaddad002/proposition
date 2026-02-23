@@ -70,6 +70,49 @@ export async function getFilteredLeads(filters: LeadFilters = {}): Promise<Lead[
   });
 }
 
+// ─── Auth ────────────────────────────────────────────────────────────
+// Stubs — will be replaced by real fetch() calls once the backend is live.
+
+export interface SignupInput {
+  email: string;
+  hashedPassword: string;
+  username: string;
+  lastname: string;
+  firstname: string;
+}
+
+export interface SigninInput {
+  username: string;
+  hashedPassword: string;
+}
+
+export interface SigninResponse {
+  userId: string;
+}
+
+/** POST /auth/signup */
+export async function signup(_input: SignupInput): Promise<{ userId: string; message: string }> {
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY));
+  return { userId: 'mock-user-id', message: 'Account created' };
+}
+
+/** POST /auth/signin */
+export async function signin(_input: SigninInput): Promise<SigninResponse> {
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY));
+  return { userId: 'mock-user-id' };
+}
+
+/** POST /auth/signout */
+export async function signout(): Promise<void> {
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY));
+}
+
+/** POST /auth/refresh */
+export async function refreshToken(): Promise<{ accessToken: string }> {
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY));
+  return { accessToken: 'mock-access-token' };
+}
+
 // ─── Users ──────────────────────────────────────────────────────────
 interface UsersPayload {
   fournisseur: Fournisseur;
@@ -77,19 +120,46 @@ interface UsersPayload {
   acheteur: Acheteur;
 }
 
-export async function getFournisseur(): Promise<Fournisseur> {
+/**
+ * GET /users/me — returns the profile of the currently-authenticated user.
+ *
+ * In the mock layer we still read from `users.json` and pick the right
+ * role-object. Pass the current role so the mock knows which sub-object
+ * to return.  When plugged to a real backend a single GET /users/me is
+ * enough (the token carries the role).
+ */
+export async function getMe(role: 'fournisseur'): Promise<Fournisseur>;
+export async function getMe(role: 'agent'): Promise<Agent>;
+export async function getMe(role: 'acheteur'): Promise<Acheteur>;
+export async function getMe(role: 'fournisseur' | 'agent' | 'acheteur'): Promise<Fournisseur | Agent | Acheteur> {
+  const data = await fetchJson<UsersPayload>('users.json');
+  return data[role];
+}
+
+/** POST /users/me — update profile */
+export interface UpdateMeInput {
+  bio?: string;
+  phone?: string;
+  email?: string;
+  displayName?: string;
+}
+
+export async function updateMe(_input: UpdateMeInput): Promise<Fournisseur | Agent | Acheteur> {
+  // For mock, just return the existing fournisseur profile
   const data = await fetchJson<UsersPayload>('users.json');
   return data.fournisseur;
 }
 
-export async function getAgent(): Promise<Agent> {
-  const data = await fetchJson<UsersPayload>('users.json');
-  return data.agent;
+/** GET /users/search?username= */
+export async function searchUser(_username: string): Promise<Fournisseur | Agent | Acheteur | null> {
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY));
+  return null; // mock: no matching user
 }
 
-export async function getAcheteur(): Promise<Acheteur> {
-  const data = await fetchJson<UsersPayload>('users.json');
-  return data.acheteur;
+/** POST /users/uploadAvatar */
+export async function uploadAvatar(_blob: Blob): Promise<{ documentId: string; sharingKey: string }> {
+  await new Promise(r => setTimeout(r, SIMULATED_DELAY));
+  return { documentId: 'mock-doc-id', sharingKey: 'mock-sharing-key' };
 }
 
 // ─── Billing ────────────────────────────────────────────────────────
