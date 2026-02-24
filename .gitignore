@@ -6,3 +6,6 @@ approches/
 
 # Documentation
 *.md
+.csv
+
+.gitignore
